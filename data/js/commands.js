@@ -1,4 +1,4 @@
-const jsonx = require('./database.json');
+const jsonx = require('./../json/database.json');
 
 let answer = "/checklist report cartoes[nocol] msaf[httpversion] ordens[timepass]";
 
