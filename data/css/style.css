@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color:  #000000;
-    color: azure;
+    color: rgb(255, 255, 255);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,18 +17,17 @@ body {
     max-width: 750px;
     margin: 12px auto;
     padding: 15px 0px 0px 0px;
-    background: linear-gradient(#3913c5 , #250096) ;
+    background-color: #373737;
     border-radius: 10px;
     border-style: solid;
     border-width: 1px;
-    border-color: #808080;
+    border-color: #ffffffbe;
     text-align: center;
 }
 
 .main_container{
     display: flex;
     justify-content: center;
-    background-color: aqua;
 }
 
 .div_global {
@@ -52,14 +51,14 @@ body {
     max-width: 700px;
     border-style: none;
     background-color: rgb(240, 248, 255, 0.0);
-    color: white;
+    color: rgb(255, 255, 255);
     font-family: Arial;
 }
 
 .input_title{
     font-size: 15px;
     font-weight: bold;
-    color: rgb(255, 217, 0);
+    color: rgb(255, 255, 255);
 }
 .input_desc{
     font-size: 13px;
