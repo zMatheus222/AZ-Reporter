@@ -63,5 +63,5 @@ npm install cors
 echo "instalando lib canvas"
 npm install --save html2canvas
 
-echo "instalando lib node-fetch"
-npm install node-fetch
+echo "instalando lib axios"
+npm install axios
