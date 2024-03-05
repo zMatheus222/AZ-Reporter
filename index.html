@@ -12,11 +12,7 @@
             <h1 class="title">
                 <img src="logobrk.png" alt="" style="height: 60px;  width: 140px;">
             </h1>
-            <!-- <div class="container">
-                <h2 class="info" id="problema">A VMWare (SRVHVM001PDL ip: 10.156.180.11) sem trazer métricas e com acesso muito lento no /ui.</h2>
-                <p class="info" id="reportado">Reportado ao Marcos Paulo no grupo Observability - Monitoramento Esxi VMware.</p> <br>
-                <h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5>
-            </div> -->
+            <!--conteudo criado pelo script-->
         </div>
         <br>
         <div class="marcadagua"><img src="./data/img/azcorp.png" style="width: 15%;"></div>
@@ -24,10 +20,10 @@
     <br>
 
     <br>
-
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script>
         fetch('http://localhost:8083/commands').then(response => response.json()).then(data => {
-            
+
             console.log("data:", data);
 
             const mainElement = document.getElementById('main_container');
@@ -76,6 +72,41 @@
 
             });
 
+            // Tirar print do DOM e salvar em uma pasta
+            html2canvas(document.querySelector('.div_global')).then(canvas => {
+                
+                // Converta o canvas para um URL de dados
+                const imageData = canvas.toDataURL("image/png");
+                
+                //criando objeto que será enviado ao servidor
+                const item_image = {};
+
+                item_image[`03-03-2024`] = {
+                    "image": imageData
+                }
+
+                console.log("sending item_image: ", item_image);
+                
+                fetch("http://localhost:8083/save-image", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(item_image)
+                }).then(response => {
+                    if (response.status === 200) {
+                        //Sucesso: Os dados foram enviados com sucesso
+                        alert("Dados enviados com sucesso!");
+                    }
+                    else {
+                        //Tratar erros de acordo com a resposta do servidor
+                        alert("Erro ao enviar dados.");
+                    }
+                }).catch(error => {
+                    alert("Erro de conexao. " + error);
+                });
+
+            });
         });
     </script>
 </body>

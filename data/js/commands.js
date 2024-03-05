@@ -60,7 +60,6 @@ if(matches){
     console.log("\nCommands: ", commands);
 
     fetch("http://localhost:8083/command_input/", {
-        
         method: "POST",
         headers: {
             "Content-Type": "application/json;charset=UTF-8"
