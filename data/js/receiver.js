@@ -1,15 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
-//const http = require('http');
 const bodyParser = require('body-parser');
-
 const database = require('./../json/database.json');
 
-const app = express ();
+const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('reports/brk')); 
 
 const PORT = 8083;
 
@@ -98,60 +97,49 @@ function CommandReader(command){
 
 }
 
-//função que recebe a imagem
-app.post('/save-image', (req, res) =>{
-
+app.post('/save-image', (req, res) => {
     const data = req.body;
-    
-    const imageDate = Object.keys(data);
+    const imageDate = Object.keys(data)[0];
     const imageBase64 = data[imageDate]["image"];
 
-    //console.log("called /save-image endpoint, req: ", data[imageDate]["image"]);
+    saveImage(imageBase64, `./reports/brk/report_brk_${imageDate}.png`);
 
-    //console.log("item_name......: ", item_name);
-    //console.log("actual_img_data: ", actual_img_data);
-    
-    //saveImage(imageBase64, "./reports/brk/report_brk_" + imageDate + ".png");
-    //sendToMattermost("mensagem com imagem", imageBase64);
+    console.log("Imagem salva!");
 
-    console.log("ended!");
-
+    res.sendStatus(200);
 });
 
-let to_html_commands;
-
-app.get('/commands', (req, res) =>{
+app.get('/commands', (req, res) => {
     res.send(to_html_commands);
 });
 
-// Middleware para analisar solicitações POST
-app.use(bodyParser.urlencoded({ extended: true }));
-
 let lastCommand;
 
-// Rota POST para receber comandos slash
-app.post('/checklist', (req, res) => {
+app.use(bodyParser.urlencoded({ extended: true }));
 
-    // Verificar o token enviado pelo Mattermost
-    if (req.body.token !== 'u5s3ewim5t8i5g7wc8urd8zhjo') {
+app.post('/checklist', (req, res) => {
+    if (req.body.token !== 'i1r4zxb367n6tcyx8jsodkkmbr') {
         return res.status(403).send('Token inválido');
     }
 
-    // Lógica para processar o comando e gerar uma resposta adequada
-    const response = `Você enviou o comando '${req.body.command}'`;
-
-    console.log("resposta mattermost: ", req.body);
-
+    const response = `Aqui está o checklist: '${req.body.command}'`;
     lastCommand = req.body.command + " " + req.body.text;
-
     to_html_commands = CommandReader(lastCommand);
-    
-    console.log("to_html_commands", to_html_commands);
 
-    // Responder de volta ao Mattermost
-    res.json({ response_type: 'in_channel', text: response });
+    const imageBuffer = fs.readFileSync(__dirname + '/reports/brk/report_brk.png');
+
+    const imageBase64 = Buffer.from(imageBuffer).toString('base64');
+
+    res.json({
+        response_type: 'in_channel',
+        text: response,
+        attachments: [{
+            image_url: `data:image/png;base64,${imageBase64}`,
+            text: 'Aqui está o resumo em forma de imagem'
+        }]
+    });
 });
 
 app.listen(PORT, () => {
-    console.log(`\nAZ-Reporter iniciado na porta: ${PORT}\n`);
+    console.log(`AZ-Reporter iniciado na porta: ${PORT}`);
 });
