@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-const database = require('./../json/database.json');
+const database = require('./data/json/database.json');
+const path = require('path');
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(cors());
 app.use(express.static('reports/brk')); 
 
 const PORT = 8083;
+
+let to_html_commands = 'Esperando comando';
 
 // Função para salvar a imagem em disco
 function saveImage(base64Data, fileName) {
@@ -102,7 +105,7 @@ app.post('/save-image', (req, res) => {
     const imageDate = Object.keys(data)[0];
     const imageBase64 = data[imageDate]["image"];
 
-    saveImage(imageBase64, `./reports/brk/report_brk_${imageDate}.png`);
+    saveImage(imageBase64, `./reports/brk/report_brk.png`);
 
     console.log("Imagem salva!");
 
@@ -118,7 +121,8 @@ let lastCommand;
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/checklist', (req, res) => {
-    if (req.body.token !== 'i1r4zxb367n6tcyx8jsodkkmbr') {
+
+    if (req.body.token !== 'u5s3ewim5t8i5g7wc8urd8zhjo') {
         return res.status(403).send('Token inválido');
     }
 
@@ -139,6 +143,14 @@ app.post('/checklist', (req, res) => {
         }]
     });
 });
+
+// Servindo o arquivo HTML
+app.get('/', (req, res) => {
+    console.log("__dirname + '/index.html", __dirname + '/index.html');
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+app.use(express.static(path.join(__dirname)));
 
 app.listen(PORT, () => {
     console.log(`AZ-Reporter iniciado na porta: ${PORT}`);
