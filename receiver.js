@@ -4,6 +4,8 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const database = require('./data/json/database.json');
 const path = require('path');
+const puppeteer = require('puppeteer');
+const UpdateDOM = require('./data/js/DOM_updater');
 
 const app = express();
 
@@ -14,7 +16,42 @@ app.use(express.static('reports/brk'));
 const PORT = 8083;
 
 let to_html_commands = 'Esperando comando';
+const report_img_dir = './reports/brk/report_brk.png';
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function saveImage() {
+  try {
+    console.log("[Puppeteer] tirando screenshot da pagina");
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto('http://localhost:8083'); // URL do seu servidor local
+    await sleep(3000);
+
+    // let imageExists = false;
+    // while(!imageExists){
+    //     if(fs.existsSync(report_img_dir)){
+    //         imageExists = true;
+    //     }
+    //     else{
+    //         console.log("[Puppeteer] Aguardando carregamento da imagem para realizar a screenshot...");
+    //         await sleep(1000);
+    //     }
+    // }
+
+    await page.screenshot({ path: report_img_dir });
+    console.log("screenshot salva em: ", report_img_dir);
+    await browser.close();
+  }
+  catch (error) {
+    console.error('Ocorreu um erro:', error);
+  }
+};
+
+/*
 // Função para salvar a imagem em disco
 function saveImage(base64Data, fileName) {
 
@@ -36,6 +73,7 @@ function saveImage(base64Data, fileName) {
     });
 
 }
+*/
 
 function CommandReader(command){
 
@@ -100,23 +138,22 @@ function CommandReader(command){
 
 }
 
-app.post('/save-image', (req, res) => {
-    const data = req.body;
-    const imageDate = Object.keys(data)[0];
-    const imageBase64 = data[imageDate]["image"];
+// app.post('/save-image', (req, res) => {
+//     const data = req.body;
+//     const imageDate = Object.keys(data)[0];
+//     const imageBase64 = data[imageDate]["image"];
 
-    saveImage(imageBase64, `./reports/brk/report_brk.png`);
+    
+//     saveImage(imageBase64, `./reports/brk/report_brk.png`);
 
-    console.log("Imagem salva!");
+//     console.log("Imagem salva!");
 
-    res.sendStatus(200);
-});
+//     res.sendStatus(200);
+// });
 
 app.get('/commands', (req, res) => {
     res.send(to_html_commands);
 });
-
-let lastCommand;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -127,8 +164,16 @@ app.post('/checklist', (req, res) => {
     }
 
     const response = `Aqui está o checklist: '${req.body.command}'`;
-    lastCommand = req.body.command + " " + req.body.text;
-    to_html_commands = CommandReader(lastCommand);
+    to_html_commands = CommandReader(req.body.command + " " + req.body.text);
+
+    //deletar diretorio para depois escrever novamente
+    fs.unlink(report_img_dir,(err) =>{
+        if(err){ console.error('Erro ao deletar o arquivo:', err); return; }
+        console.log("diretorio " + report_img_dir + " apagado com sucesso.");
+    });
+
+    UpdateDOM();
+    saveImage();
 
     const imageBuffer = fs.readFileSync(__dirname + '/reports/brk/report_brk.png');
 
@@ -142,11 +187,11 @@ app.post('/checklist', (req, res) => {
             text: 'Aqui está o resumo em forma de imagem'
         }]
     });
+    
 });
 
 // Servindo o arquivo HTML
 app.get('/', (req, res) => {
-    console.log("__dirname + '/index.html", __dirname + '/index.html');
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 

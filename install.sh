@@ -65,3 +65,9 @@ npm install --save html2canvas
 
 echo "instalando lib axios"
 npm install axios
+
+echo "instalando lib puppeter"
+npm install puppeteer
+
+echo "instalando lib jsdom"
+npm install jsdom

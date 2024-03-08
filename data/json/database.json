@@ -1,17 +1,17 @@
 {
     "banco_problemas" : {
 
-        "msaf_statusdown": ["Status Down", "Mastersaf com problema de Status Down"],
-        "msaf_httpstatus": ["Http Status", "Mastersaf com problema de HTTP"],
-        "msaf_httpversion": ["HTTP Version", "Mastersaf com problema no versionamento do HTTP"],
-        "msaf_sslno": ["SSL NO", "Mastersaf com problema de SSL"],
-        "msaf_sslexpire": ["SSL Expire", "Mastersaf com problema de SSL Expire"],
+        "msaf_statusdown": ["Mastersaf apresentando Status Down", "Mastersaf com problema de Status Down"],
+        "msaf_httpstatus": ["Mastersaf Http Status", "Mastersaf com problema de HTTP"],
+        "msaf_httpversion": ["Mastersaf HTTP Version", "Mastersaf com problema no versionamento do HTTP"],
+        "msaf_sslno": ["Mastersaf apresentando SSL NO", "Mastersaf com problema de SSL"],
+        "msaf_sslexpire": ["Mastersaf SSL Expire", "Mastersaf com problema de SSL Expire"],
 
-        "cartoes_nocol": ["Coleta de cartoes", "Nao coletaram hoje"],
+        "cartoes_nocol": ["Coleta de cartoes", "Cartões não coletaram hoje"],
 
         "ordens_timepass": ["Ordens de serviço", "passando dos 40min"],
 
-        "ordens_error404": ["Send Grid", "Error 404"]
+        "ordens_error404": ["BRK dashboard Send Grid", "Apresentando Error 404"]
 
     }
 }
