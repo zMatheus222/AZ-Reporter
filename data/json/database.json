@@ -7,7 +7,7 @@
         "msaf_sslno": ["Mastersaf apresentando SSL NO", "Mastersaf com problema de SSL"],
         "msaf_sslexpire": ["Mastersaf SSL Expire", "Mastersaf com problema de SSL Expire"],
 
-        "cartoes_nocol": ["Coleta de cartoes", "Cartões não coletaram hoje"],
+        "cartoes_nocollected": ["Coleta de cartoes", "Cartões não coletaram hoje"],
 
         "ordens_timepass": ["Ordens de serviço", "passando dos 40min"],
 

@@ -4,50 +4,48 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const database = require('./data/json/database.json');
 const path = require('path');
-const puppeteer = require('puppeteer');
-const UpdateDOM = require('./data/js/DOM_updater');
+const puppeteer = require('puppeteer'); //lib puppeteer semelhante aos sintéticos para tirar prints
+
+const UpdateDOM = require('./data/js/DOM_updater'); //importando arquivo js 'DOM_updater.js'
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static('reports/brk')); 
+app.use(express.static('reports/brk')); //rota que serve os arquivos estaticos no caso a imagem do report
 
 const PORT = 8083;
 
 let to_html_commands = 'Esperando comando';
-const report_img_dir = './reports/brk/report_brk.png';
+const report_img_dir = './reports/brk/report_brk.png'; //diretorio da imagem do report
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 async function saveImage() {
   try {
-    console.log("[Puppeteer] tirando screenshot da pagina");
+    console.log("passo 3.5 [Puppeteer] tirando screenshot da pagina");
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
+
+    //const browser = await puppeteer.launch();
+    
+    console.log("passo 3.6 acessando page.goto('ip')");
     const page = await browser.newPage();
-    await page.goto('http://localhost:8083'); // URL do seu servidor local
-    await sleep(3000);
-
-    // let imageExists = false;
-    // while(!imageExists){
-    //     if(fs.existsSync(report_img_dir)){
-    //         imageExists = true;
-    //     }
-    //     else{
-    //         console.log("[Puppeteer] Aguardando carregamento da imagem para realizar a screenshot...");
-    //         await sleep(1000);
-    //     }
-    // }
-
-    await page.screenshot({ path: report_img_dir });
-    console.log("screenshot salva em: ", report_img_dir);
+    await page.goto('http://localhost:8083');
+    //await sleep(3000);
+    if(!fs.existsSync(report_img_dir)) {
+        await page.screenshot({ path: report_img_dir });
+        console.log("passo 3.7 screenshot salva em: ", report_img_dir);
+    }
+    else{
+        console.log("passo 3.7 imagem já existe no diretório, pulando screenshot");
+    }
     await browser.close();
   }
   catch (error) {
-    console.error('Ocorreu um erro:', error);
+    console.error('passo 3.7 Ocorreu um erro:', error);
   }
 };
 
@@ -77,7 +75,7 @@ function saveImage(base64Data, fileName) {
 
 function CommandReader(command){
 
-    //command = "/checklist report cartoes[nocol] msaf[httpversion] ordens[timepass]";
+    //command = "/checklist report cartoes[nocollected] msaf[httpversion] ordens[timepass]";
 
     //regex para separar os itens dos comandos
     const rgx_command = /(\w+)\[([^\]]+)\]/g;
@@ -131,8 +129,6 @@ function CommandReader(command){
 
         });
 
-        //console.log("\nCommands: ", commands);
-
         return {commands: commands};
     }
 
@@ -157,37 +153,55 @@ app.get('/commands', (req, res) => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/checklist', (req, res) => {
+app.post('/checklist', async (req, res) => {
+
+    console.log("passo 1, entrou no /checklist");
 
     if (req.body.token !== 'u5s3ewim5t8i5g7wc8urd8zhjo') {
         return res.status(403).send('Token inválido');
     }
 
-    const response = `Aqui está o checklist: '${req.body.command}'`;
+    const response = `Bom dia segue o report: '${req.body.command}'`;
     to_html_commands = CommandReader(req.body.command + " " + req.body.text);
 
-    //deletar diretorio para depois escrever novamente
-    fs.unlink(report_img_dir,(err) =>{
-        if(err){ console.error('Erro ao deletar o arquivo:', err); return; }
-        console.log("diretorio " + report_img_dir + " apagado com sucesso.");
-    });
+    console.log("passo 2 apagando arquivo anterior");
 
-    UpdateDOM();
-    saveImage();
+    try{
+        // deletar diretorio para depois escrever novamente
+        if (fs.existsSync(report_img_dir)) {
+            await fs.promises.unlink(report_img_dir);
+            console.log("diretorio " + report_img_dir + " apagado com sucesso.");
+        }
+        else {
+            console.log("Imagem não existe no diretório " + report_img_dir + " não foi necessário apaga-la");
+        }
 
-    const imageBuffer = fs.readFileSync(__dirname + '/reports/brk/report_brk.png');
+        console.log("passo 3.0, antes de chamar UpdateDOM();");
 
-    const imageBase64 = Buffer.from(imageBuffer).toString('base64');
+        await UpdateDOM();
+        console.log("passo 3.4, passou do UpdateDOM(); antes de chamar await saveImage();");
+        await saveImage();
+        console.log("passo 4.0, passou do await saveImage();");
 
-    res.json({
-        response_type: 'in_channel',
-        text: response,
-        attachments: [{
-            image_url: `data:image/png;base64,${imageBase64}`,
-            text: 'Aqui está o resumo em forma de imagem'
-        }]
-    });
-    
+        const imageBuffer = fs.readFileSync(__dirname + '/reports/brk/report_brk.png');
+
+        const imageBase64 = Buffer.from(imageBuffer).toString('base64');
+
+        console.log("passo final, enviando res.json({})");
+
+        res.json({
+            response_type: 'in_channel',
+            text: response,
+            attachments: [{
+                image_url: `data:image/png;base64,${imageBase64}`,
+                text: 'Aqui está o resumo em forma de imagem'
+            }]
+        });
+    }
+    catch{
+        console.error('Ocorreu um erro:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
 });
 
 // Servindo o arquivo HTML

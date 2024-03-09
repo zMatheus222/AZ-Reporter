@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  az-reporter:
+    image: azcorp/azreporter:0.1
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./az-reporter.js:/home/node/app/az-reporter.js
+      - ./package.json:/home/node/app/package.json
+      - ./data/js/DOM_updater.js:/home/node/app/data/js/DOM_updater.js
+      - ./data/json/database.json:/home/node/app/data/json/database.json
