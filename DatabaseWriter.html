@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AZ-Reporter Writer</title>
+    <style>
+        h1{
+            font-family: Verdana;
+            font-size: 18px;
+        }
+        .form{
+            display: block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form">
+        <h1>AZ-Reporter - Registre um Report</h1><br>
+
+        <label for="input_titulo">Titulo do problema</label><br>
+        <input type="text" id="input_titulo" placeholder="Sistema parou..."><br><br>
+
+        <label for="input_descricao">Descrição do problema</label><br>
+        <textarea id="input_descricao" placeholder="maquina x parou..."></textarea><br><br>
+
+        <label for="input_sistema">Sistema (/checklist report 'sistema')</label><br>
+        <input type="text" id="input_sistema" placeholder="sistema"><br><br>
+
+        <label for="input_arg">Argumento (/checklist report sistema['argumento'])</label><br>
+        <textarea id="input_arg" placeholder="['argumento']"></textarea><br><br>
+
+        <label for="input_reportchat">Chat de report</label><br>
+        <select id="input_reportchat" name="reportchat">
+            <option selected>O11Y - Alinhamento BRK</option>
+            <option>Observability - Monitoramento Esxi VMware</option>
+            <option>[Observability] - X8 Monitoramento</option>
+        </select><br><br>
+        <button id="btnEnviar">Enviar</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const btnEnviar = document.getElementById('btnEnviar');
+
+            function enviarDados() {
+
+                const data = {};
+
+                const inputs = document.querySelectorAll('[id^="input_"]');
+                console.log("all_inputs: ", inputs);
+                inputs.forEach((input, index) =>{
+                    console.log("input_id:", input.id, "| index:", index, "| input_value:", input.value);
+                    data[input.id.match(/input_(.+)/)[1]] = input.value;
+                });
+
+                fetch('http://localhost:8083/newcommand', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then(response =>{
+                    if(!response.ok) {
+                        throw new Error('Erro ao enviar dados');
+                    }
+                    return response.json();
+                }).then(data => {
+                    console.log('Dados enviados com sucesso: ', data);
+                }).catch(error => {
+                    console.log("Error: ", error);
+                });
+            };
+
+            btnEnviar.addEventListener('click', enviarDados);
+
+        });
+    </script>
+</body>
+</html>

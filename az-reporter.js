@@ -2,7 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const bodyParser = require('body-parser');
-const database = require('./data/json/database.json');
+
+const database_dir = './data/json/database.json';
+
+let database = require(database_dir);
 const path = require('path');
 const puppeteer = require('puppeteer'); //lib puppeteer semelhante aos sintéticos para tirar prints
 
@@ -73,13 +76,55 @@ function saveImage(base64Data, fileName) {
 }
 */
 
+function insertNewCommand(data){
+
+    try{
+
+        const titulo = data['titulo'];
+        const descricao = data['descricao'];
+        const sistema = data['sistema'];
+        const arg = data['arg'];
+
+        console.log("Adicionando novo comando ao database: ", sistema + '[' + arg + ']');
+
+        database.banco_problemas[sistema + "_" + arg] = [titulo, descricao];
+
+        const jsonDatabase = JSON.stringify(database, null, 2);
+
+        fs.writeFileSync(database_dir, jsonDatabase);
+
+        console.log("Comando adicionado com sucesso ao database!");
+    }
+    catch(error){
+        console.log("Erro ao adicionar o comando: ", error);
+    }
+
+}
+
 function CommandReader(command){
 
     //command = "/checklist report cartoes[nocollected] msaf[httpversion] ordens[timepass]";
+    //command = "/checklist report vmwareSRVHVM004RMR[noui]";
+
+    console.log("comando recebido: ", command);
+
+    let identifier = command.match(/(?:vmware|unidade)(.+)\[/);
+
+    if(identifier) {
+        console.log("command identifier:", identifier[1]);
+        const OriginalCommand = command.replace(identifier[1], '#ip#');
+        console.log("comando depois:", OriginalCommand);
+        command = OriginalCommand;
+    }
+    else {
+        identifier = null;
+    }
 
     //regex para separar os itens dos comandos
-    const rgx_command = /(\w+)\[([^\]]+)\]/g;
+    const rgx_command = /([A-Za-z-0-9#]+)\[([^\]]+)\]/g;
     let command_matches = command.match(rgx_command);
+
+    console.log("passo 1.1 command_matches: ", command_matches);
 
     //verificar se existe ocorrencia da regex no comando e não 'null'
     if(command_matches){
@@ -89,11 +134,14 @@ function CommandReader(command){
         //iterar sobre cada ocorrencia no comando
         command_matches.forEach(function(match){
 
+            console.log("passo 1.2: match:", match);
+
             //variavel que salva o sistema, conteudo passado antes dos colchetes 'msaf'[...]
-            let system = match.match(/^(\w+)\[/)[1];
+            let system = match.match(/^([A-Za-z-0-9#]+)\[/)[1];
 
             commands[system] = {
                 titulo_desc: [],
+                identifier: (identifier != null) ? identifier[1] : "",
                 args: []
             }
 
@@ -108,6 +156,8 @@ function CommandReader(command){
 
             args = argumentos.match(regex_argumentos).input.split(',').map(arg => arg.trim());
 
+            console.log("passo 1.3 args: ", args);
+
             args.forEach(function (problema_recebido){
 
                 //vetor que vai salvar o problema atual 'titulo' - 'descricao problema'
@@ -116,11 +166,23 @@ function CommandReader(command){
                 //buscar o problema recebido no comando na lista de problemas
                 if(system + "_" + problema_recebido in database["banco_problemas"]){
 
-                    titulo_desc.push(database["banco_problemas"][system + "_" + problema_recebido][0]); //titulo
-                    titulo_desc.push(database["banco_problemas"][system + "_" + problema_recebido][1]); //descricao
+                    let titulo = database["banco_problemas"][system + "_" + problema_recebido][0];
+                    let descricao = database["banco_problemas"][system + "_" + problema_recebido][1];
+
+                    if(identifier != null){
+                        titulo = titulo.replace('#vmware#', identifier[1]);
+                        titulo = titulo.replace('#ip#', "192.168.0.4");
+                        titulo = titulo.replace('#region#', "IGAOOESTEMAIS");
+                        descricao = descricao.replace('#vmware#', identifier[1]);
+                        descricao = descricao.replace('#ip#', "192.168.0.4");
+                        descricao = descricao.replace('#region#', "IGAOOESTEMAIS");
+                    }
+
+                    titulo_desc.push(titulo); //titulo
+                    titulo_desc.push(descricao); //descricao
 
                     commands[system]["titulo_desc"] = titulo_desc; //adicionando titulo e descrição ao objeto
-
+                    //commands[system]["titulo_desc"].push(titulo_desc);
                 }
 
             });
@@ -207,6 +269,19 @@ app.post('/checklist', async (req, res) => {
 // Servindo o arquivo HTML
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+app.post('/newcommand', (req, res) =>{
+    try {
+        console.log("Novo comando recebido: ", req.body);
+        insertNewCommand(req.body);
+
+        res.send(200);
+    }
+    catch(error){
+        console.log("Error: ", error);
+        res.send(500);
+    }
 });
 
 app.use(express.static(path.join(__dirname)));

@@ -1,17 +1,578 @@
 {
-    "banco_problemas" : {
-
-        "msaf_statusdown": ["Mastersaf apresentando Status Down", "Mastersaf com problema de Status Down"],
-        "msaf_httpstatus": ["Mastersaf Http Status", "Mastersaf com problema de HTTP"],
-        "msaf_httpversion": ["Mastersaf HTTP Version", "Mastersaf com problema no versionamento do HTTP"],
-        "msaf_sslno": ["Mastersaf apresentando SSL NO", "Mastersaf com problema de SSL"],
-        "msaf_sslexpire": ["Mastersaf SSL Expire", "Mastersaf com problema de SSL Expire"],
-
-        "cartoes_nocollected": ["Coleta de cartoes", "Cartões não coletaram hoje"],
-
-        "ordens_timepass": ["Ordens de serviço", "passando dos 40min"],
-
-        "ordens_error404": ["BRK dashboard Send Grid", "Apresentando Error 404"]
-
+  "banco_problemas": {
+    "msaf_statusdown": [
+      "Mastersaf apresentando Status Down",
+      "Mastersaf com problema de Status Down"
+    ],
+    "msaf_httpstatus": [
+      "Mastersaf Http Status",
+      "Mastersaf com problema de HTTP"
+    ],
+    "msaf_httpversion": [
+      "Mastersaf HTTP Version",
+      "Mastersaf com problema no versionamento do HTTP"
+    ],
+    "msaf_sslno": [
+      "Mastersaf apresentando SSL NO",
+      "Mastersaf com problema de SSL"
+    ],
+    "msaf_sslexpire": [
+      "Mastersaf SSL Expire",
+      "Mastersaf com problema de SSL Expire"
+    ],
+    "cartoes_nocollected": [
+      "Coleta de cartoes",
+      "Cartões não coletaram hoje"
+    ],
+    "ordens_timepass": [
+      "Ordens de serviço",
+      "passando dos 40min"
+    ],
+    "ordens_error404": [
+      "BRK dashboard Send Grid",
+      "Apresentando Error 404"
+    ],
+    "vmware_0.0.0.0:stopped": [
+      "Problema em tal sistema",
+      "Maquina sem trazer metricas"
+    ],
+    "x8_datac1": [
+      "X8 DATAC1",
+      "Alto consumo no DATAC1"
+    ],
+    "vmware#ip#_noui": [
+      "VMWare #vmware# de #region# (ip: #ip#) esta sem acesso no /ui",
+      "A VMWare de #region# #vmware# (ip: #ip#) está sem acesso no /ui"
+    ]
+  },
+  "UnidadesControle": {
+    "SRVPTH001APG": {
+      "HOSTNAME": "SRVPTH001APG",
+      "IP": "10.156.84.94",
+      "UNIDADE": "APARECIDA DE GOIANIA"
+    },
+    "SRVPTH001BLU": {
+      "HOSTNAME": "SRVPTH001BLU",
+      "IP": "10.156.18.21",
+      "UNIDADE": "BLUMENAU"
+    },
+    "SRVPTH001CDR": {
+      "HOSTNAME": "SRVPTH001CDR",
+      "IP": "10.156.58.81",
+      "UNIDADE": "CAÇADOR"
+    },
+    "SRVPTH001CCH": {
+      "HOSTNAME": "SRVPTH001CCH",
+      "IP": "10.156.14.12",
+      "UNIDADE": "CACHOEIRO DO ITAPEMIRIM"
+    },
+    "SRVPTH001JAG": {
+      "HOSTNAME": "SRVPTH001JAG",
+      "IP": "10.156.26.100",
+      "UNIDADE": "JAGUARIBE"
+    },
+    "SRVPTH001JTI": {
+      "HOSTNAME": "SRVPTH001JTI",
+      "IP": "10.156.98.99",
+      "UNIDADE": "JATAÍ"
+    },
+    "SRVPHT001LIM": {
+      "HOSTNAME": "SRVPHT001LIM",
+      "IP": "10.156.10.33",
+      "UNIDADE": "LIMEIRA"
+    },
+    "SRVPTH001MCE": {
+      "HOSTNAME": "SRVPTH001MCE",
+      "IP": "10.156.81.54",
+      "UNIDADE": "MACAÉ"
+    },
+    "SRVPTH001RMM": {
+      "HOSTNAME": "SRVPTH001RMM",
+      "IP": "10.156.30.245",
+      "UNIDADE": "MACÉIO"
+    },
+    "SRVPHT001MAI": {
+      "HOSTNAME": "SRVPHT001MAI",
+      "IP": "10.156.36.9",
+      "UNIDADE": "MAIRINQUE"
+    },
+    "SRVPHT001MAN": {
+      "HOSTNAME": "SRVPHT001MAN",
+      "IP": "10.156.198.24",
+      "UNIDADE": "MANSO"
+    },
+    "SRVPHT001MAU": {
+      "HOSTNAME": "SRVPHT001MAU",
+      "IP": "10.156.16.40",
+      "UNIDADE": "MAUÁ"
+    },
+    "SRVPHT001PDL": {
+      "HOSTNAME": "SRVPHT001PDL",
+      "IP": "10.156.180.80",
+      "UNIDADE": "PAÇO DO LUMIAR"
+    },
+    "SRVPHT001PFA": {
+      "HOSTNAME": "SRVPHT001PFA",
+      "IP": "10.156.50.41",
+      "UNIDADE": "PORTO FERREIRA"
+    },
+    "SRVPTH001RCO": {
+      "HOSTNAME": "SRVPTH001RCO",
+      "IP": "10.156.174.11",
+      "UNIDADE": "RIO CLARO"
+    },
+    "SRVPTH001RDO": {
+      "HOSTNAME": "SRVPTH001RDO",
+      "IP": "10.156.42.42",
+      "UNIDADE": "RIO DAS OSTRAS"
+    },
+    "SRVPTH001RVD": {
+      "HOSTNAME": "SRVPTH001RVD",
+      "IP": "10.156.86.99",
+      "UNIDADE": "RIO VERDE"
+    },
+    "SRVPTH001RMR": {
+      "HOSTNAME": "SRVPTH001RMR",
+      "IP": "10.156.22.19",
+      "UNIDADE": "RMR - REGIÃO METROP. DE RECIFE"
+    },
+    "SRVPHT001STG": {
+      "HOSTNAME": "SRVPHT001STG",
+      "IP": "10.156.20.25",
+      "UNIDADE": "SANTA GERTRUDES"
+    },
+    "SRVPTH001SUM": {
+      "HOSTNAME": "SRVPTH001SUM",
+      "IP": "10.156.188.10",
+      "UNIDADE": "SUMARÉ"
+    },
+    "SRVPTH001TOC": {
+      "HOSTNAME": "SRVPTH001TOC",
+      "IP": "10.156.100.99",
+      "UNIDADE": "TOCANTINS"
+    },
+    "SRVPTH001TRD": {
+      "HOSTNAME": "SRVPTH001TRD",
+      "IP": "10.156.96.99",
+      "UNIDADE": "TRINDADE"
+    },
+    "SRVPHT001URU": {
+      "HOSTNAME": "SRVPHT001URU",
+      "IP": "10.156.34.24",
+      "UNIDADE": "URUGUAIANA"
+    },
+    "SRVPHT001SPO": {
+      "HOSTNAME": "SRVPHT001SPO",
+      "IP": "10.156.76.162",
+      "UNIDADE": "WTORRE-CORPORATIVO"
+    },
+    "SRVPTH001ZOM": {
+      "HOSTNAME": "SRVPTH001ZOM",
+      "IP": "10.156.60.52",
+      "UNIDADE": "ZONA OESTE MAIS"
     }
+  },
+  "vmwares": {
+    "76": {
+      "SRVHVM01RVD": {
+        "Port": "9200",
+        "Container Name": "vmware_exporter_rvd01",
+        "Unidade": "RVD",
+        "IP": "10.156.86.10"
+      },
+      "srvhvm02rvd": {
+        "Port": "9201",
+        "Container Name": "vmware_exporter_rvd02",
+        "Unidade": "RVD",
+        "IP": "10.156.86.20"
+      },
+      "SRVHVM03RVD": {
+        "Port": "9202",
+        "Container Name": "vmware_exporter_rvd03",
+        "Unidade": "RVD",
+        "IP": "10.156.86.59"
+      },
+      "SRVHVM001SPO": {
+        "Port": "9203",
+        "Container Name": "vmware_exporter_spp01",
+        "Unidade": "SSP",
+        "IP": "10.156.76.145"
+      },
+      "SRVHVMW003SPO": {
+        "Port": "9205",
+        "Container Name": "vmware_exporter_ssp03",
+        "Unidade": "SSP",
+        "IP": "10.156.76.130"
+      },
+      "SRVHVM001STG": {
+        "Port": "9206",
+        "Container Name": "vmware_exporter_stg01",
+        "Unidade": "STG",
+        "IP": "10.156.20.16"
+      },
+      "SRVHVM002STG": {
+        "Port": "9207",
+        "Container Name": "vmware_exporter_stg02",
+        "Unidade": "STG",
+        "IP": "10.156.20.10"
+      },
+      "SRVHVM001SUM": {
+        "Port": "9208",
+        "Container Name": "vmware_exporter_sum01",
+        "Unidade": "SUM",
+        "IP": "10.156.188.2"
+      },
+      "SRVHVM002SUM": {
+        "Port": "9209",
+        "Container Name": "vmware_exporter_sum02",
+        "Unidade": "SUM",
+        "IP": "10.156.188.9"
+      },
+      "SRVHVM014TOC": {
+        "Port": "9210",
+        "Container Name": "vmware_exporter_toc01",
+        "Unidade": "TOC",
+        "IP": "10.156.100.70"
+      },
+      "srvhvm015toc": {
+        "Port": "9211",
+        "Container Name": "vmware_exporter_toc02",
+        "Unidade": "TOC",
+        "IP": "10.156.100.71"
+      },
+      "srvhvm016toc": {
+        "Port": "9212",
+        "Container Name": "vmware_exporter_toc03",
+        "Unidade": "TOC",
+        "IP": "10.156.100.72"
+      },
+      "srvhvm017toc": {
+        "Port": "9213",
+        "Container Name": "vmware_exporter_toc04",
+        "Unidade": "TOC",
+        "IP": "10.156.100.73"
+      },
+      "SRVHVM002TRD": {
+        "Port": "9214",
+        "Container Name": "vmware_exporter_trd01",
+        "Unidade": "TRD",
+        "IP": "10.156.96.10"
+      },
+      "SRVHVM001TRD": {
+        "Port": "9215",
+        "Container Name": "vmware_exporter_trd02",
+        "Unidade": "TRD",
+        "IP": "10.156.96.20"
+      },
+      "SRVHVM003TRD": {
+        "Port": "9216",
+        "Container Name": "vmware_exporter_trd03",
+        "Unidade": "TRD",
+        "IP": "10.156.96.57"
+      },
+      "SRVHVM001URU": {
+        "Port": "9217",
+        "Container Name": "vmware_exporter_uru01",
+        "Unidade": "URU",
+        "IP": "10.156.34.23"
+      },
+      "SRVHVM002URU": {
+        "Port": "9218",
+        "Container Name": "vmware_exporter_uru02",
+        "Unidade": "URU",
+        "IP": "10.156.34.22"
+      },
+      "SRVHVM003URU": {
+        "Port": "9219",
+        "Container Name": "vmware_exporter_uru03",
+        "Unidade": "URU",
+        "IP": "10.156.34.21"
+      }
+    },
+    "78": {
+      "srvhvm04apg": {
+        "Port": "9200",
+        "Container Name": "vmware_exporter_apg01",
+        "Unid": "APG",
+        "IP": "10.156.84.52"
+      },
+      "SRVHVM05APG": {
+        "Port": "9201",
+        "Container Name": "vmware_exporter_apg02",
+        "Unid": "APG",
+        "IP": "10.156.84.57"
+      },
+      "srvhvm03apg": {
+        "Port": "9202",
+        "Container Name": "vmware_exporter_apg03",
+        "Unid": "APG",
+        "IP": "10.156.84.51 - Descontinuada"
+      },
+      "SRVHVM003BLU": {
+        "Port": "9203",
+        "Container Name": "vmware_exporter_blu01",
+        "Unid": "BLU",
+        "IP": "10.156.18.3"
+      },
+      "SRVHVM005BLU": {
+        "Port": "9204",
+        "Container Name": "vmware_exporter_blu02",
+        "Unid": "BLU",
+        "IP": "10.156.18.5"
+      },
+      "vmware_exporter_cch01": {
+        "Port": "9205",
+        "Container Name": "CCH",
+        "Unid": "10.156.14.61"
+      },
+      "SRVHVM002CCH": {
+        "Port": "9206",
+        "Container Name": "vmware_exporter_cch02",
+        "Unid": "CCH",
+        "IP": "10.156.14.62"
+      },
+      "SRVHVM001CCH": {
+        "Port": "9207",
+        "Container Name": "vmware_exporter_cch03",
+        "Unid": "CCH",
+        "IP": "10.156.14.64"
+      },
+      "SRVHVM003CCH": {
+        "Port": "9226",
+        "Container Name": "vmware_exporter_cch04",
+        "Unid": "CCH",
+        "IP": "10.156.14.61"
+      },
+      "SRVHVM01CDR": {
+        "Port": "9208",
+        "Container Name": "vmware_exporter_cdr01",
+        "Unid": "CDR",
+        "IP": "10.156.58.10"
+      },
+      "vmware_exporter_cdr02": {
+        "Port": "9209",
+        "Container Name": "CDR",
+        "Unid": "10.156.58.40"
+      },
+      "SRVHVM001JAG": {
+        "Port": "9210",
+        "Container Name": "vmware_exporter_jag01",
+        "Unid": "JAG",
+        "IP": "10.156.26.10"
+      },
+      "vmware_exporter_jti01": {
+        "Port": "9211",
+        "Container Name": "JTI",
+        "Unid": "10.156.98.10"
+      },
+      "SRVHVM02JTI": {
+        "Port": "9212",
+        "Container Name": "vmware_exporter_jti02",
+        "Unid": "JTI",
+        "IP": "10.156.98.20"
+      },
+      "SRVHVM03JTI": {
+        "Port": "9213",
+        "Container Name": "vmware_exporter_jti03",
+        "Unid": "JTI",
+        "IP": "10.156.98.57"
+      },
+      "SRVHVM003LIM": {
+        "Port": "9214",
+        "Container Name": "vmware_exporter_lim01",
+        "Unid": "LIM",
+        "IP": "10.156.10.11"
+      },
+      "SRVHVM001LIM": {
+        "Port": "9215",
+        "Container Name": "vmware_exporter_lim02",
+        "Unid": "LIM",
+        "IP": "10.156.10.248"
+      },
+      "SRVHVM002LIM": {
+        "Port": "9216",
+        "Container Name": "vmware_exporter_lim03",
+        "Unid": "LIM",
+        "IP": "10.156.10.54"
+      },
+      "SRVHVM005LIM": {
+        "Port": "9217",
+        "Container Name": "vmware_exporter_lim04",
+        "Unid": "LIM",
+        "IP": "10.156.10.56"
+      },
+      "SRVHVM001MAI": {
+        "Port": "9218",
+        "Container Name": "vmware_exporter_mai01",
+        "Unid": "MAI",
+        "IP": "10.156.36.10"
+      },
+      "SRVHVM003MAI": {
+        "Port": "9219",
+        "Container Name": "vmware_exporter_mai02",
+        "Unid": "MAI",
+        "IP": "10.156.36.15"
+      },
+      "vmware_exporter_mai03": {
+        "Port": "9220",
+        "Container Name": "MAI",
+        "Unid": "10.156.36.13"
+      },
+      "SRVHVM001MAN": {
+        "Port": "9221",
+        "Container Name": "vmware_exporter_man01",
+        "Unid": "MAN",
+        "IP": "10.156.198.15"
+      },
+      "SRVHVM002MAN": {
+        "Port": "9222",
+        "Container Name": "vmware_exporter_man02",
+        "Unid": "MAN",
+        "IP": "10.156.198.14"
+      },
+      "SRVHVM002MAU": {
+        "Port": "9223",
+        "Container Name": "vmware_exporter_mau01",
+        "Unid": "MAU",
+        "IP": "10.156.16.23"
+      },
+      "SRVHVM003MAU": {
+        "Port": "9224",
+        "Container Name": "vmware_exporter_mau05",
+        "Unid": "MAU",
+        "IP": "10.156.16.14"
+      },
+      "vmware_exporter_mau03": {
+        "Port": "9225",
+        "Container Name": "MAU",
+        "Unid": "10.156.16.13"
+      }
+    },
+    "79": {
+      "SRVHVM001MCE": {
+        "Port": "9201",
+        "Container Name": "vmware_exporter_mce02",
+        "Unidade": "MCE",
+        "IP": "10.156.81.10"
+      },
+      "SRVHVM004MCE": {
+        "Port": "9202",
+        "Container Name": "vmware_exporter_mce03",
+        "Unidade": "MCE",
+        "IP": "10.156.81.36"
+      },
+      "SRVHVM003MCE": {
+        "Port": "9205",
+        "Container Name": "vmware_exporter_mce04",
+        "Unidade": "MCE",
+        "IP": "10.156.81.65"
+      },
+      "SRVHVM002PDL": {
+        "Port": "9203",
+        "Container Name": "vmware_exporter_pdl02",
+        "Unidade": "PDL",
+        "IP": "10.156.180.10"
+      },
+      "SRVHVM001PDL": {
+        "Port": "9204",
+        "Container Name": "vmware_exporter_pdl01",
+        "Unidade": "PDL",
+        "IP": "10.156.180.11"
+      },
+      "vmware_exporter_pdl03": {
+        "Port": "9205",
+        "Container Name": "PDL",
+        "IP": "10.156.180.160"
+      },
+      "SRVHVM01PF": {
+        "Port": "9206",
+        "Container Name": "vmware_exporter_pfa01",
+        "Unidade": "PFA",
+        "IP": "10.156.50.10"
+      },
+      "SRVHVM002PFA": {
+        "Port": "9207",
+        "Container Name": "vmware_exporter_pfa02",
+        "Unidade": "PFA",
+        "IP": "10.156.50.15"
+      },
+      "SRVHVM001RCO": {
+        "Port": "9208",
+        "Container Name": "vmware_exporter_rco01",
+        "Unidade": "RCO",
+        "IP": "10.156.174.51"
+      },
+      "SRVHVM003RCO": {
+        "Port": "9209",
+        "Container Name": "vmware_exporter_rco02",
+        "Unidade": "RCO",
+        "IP": "10.156.174.55"
+      },
+      "SRVHVM003RDO": {
+        "Port": "9210",
+        "Container Name": "vmware_exporter_rdo01",
+        "Unidade": "RDO",
+        "IP": "10.156.42.18"
+      },
+      "SRVHVM004RDO": {
+        "Port": "9211",
+        "Container Name": "vmware_exporter_rdo02",
+        "Unidade": "RDO",
+        "IP": "10.156.42.36"
+      },
+      "SRVHVM005RDO": {
+        "Port": "9212",
+        "Container Name": "vmware_exporter_rdo03",
+        "Unidade": "RDO",
+        "IP": "10.156.42.37"
+      },
+      "SRVHVM002RDO": {
+        "Port": "9214",
+        "Container Name": "vmware_exporter_rdo05",
+        "Unidade": "RDO",
+        "IP": "10.156.42.9 - Descontinuada"
+      },
+      "srvhvm004rmm": {
+        "Port": "9215",
+        "Container Name": "vmware_exporter_rmm01",
+        "Unidade": "RMM",
+        "IP": "10.156.30.205"
+      },
+      "srvhvm003rmm": {
+        "Port": "9216",
+        "Container Name": "vmware_exporter_rmm02",
+        "Unidade": "RMM",
+        "IP": "10.156.30.201"
+      },
+      "SRHVM002RMR": {
+        "Port": "9217",
+        "Container Name": "vmware_exporter_rmr01",
+        "Unidade": "RMR",
+        "IP": "10.156.22.12"
+      },
+      "SRVHVM003RMR": {
+        "Port": "9218",
+        "Container Name": "vmware_exporter_rmr02",
+        "Unidade": "RMR",
+        "IP": "10.156.22.10"
+      },
+      "SRVHVM004RMR": {
+        "Port": "9219",
+        "Container Name": "vmware_exporter_rmr03",
+        "Unidade": "RMR",
+        "IP": "10.156.22.17"
+      },
+      "vmware_exporter_rmr04": {
+        "Port": "9220",
+        "Container Name": "RMR",
+        "IP": "10.156.22.45"
+      },
+      "SRVHVM001RMR": {
+        "Port": "9221",
+        "Container Name": "vmware_exporter_rmr05",
+        "Unidade": "RMR",
+        "IP": "10.156.22.15"
+      }
+    }
+  }
 }

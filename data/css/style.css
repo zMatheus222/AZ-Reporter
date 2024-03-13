@@ -6,11 +6,6 @@ body {
     align-items: center;
     justify-content: center;
     margin-top: 15px;
-    /* Descomente e seja feliz
-    background-image: url('./../lenda.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    */
 }
 
 .container {
