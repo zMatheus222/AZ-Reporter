@@ -29,9 +29,14 @@ async function UpdateDOM() {
         
             const div_command_container = document.createElement('div');
             div_command_container.classList.add('container');
-            mainElement.appendChild(div_command_container);        
+            mainElement.appendChild(div_command_container);     
+            
+            console.log("data[\"commands\"][row]", data["commands"][row]);
 
             data["commands"][row].titulo_desc.forEach((titulo_desc, index) => {
+
+                console.log("titulo_desc: ", titulo_desc);
+
                 const div_status_container = document.createElement('div');
                 div_status_container.classList.add('status_container');
                 div_command_container.appendChild(div_status_container);

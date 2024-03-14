@@ -40,7 +40,7 @@
       "X8 DATAC1",
       "Alto consumo no DATAC1"
     ],
-    "vmware#ip#_noui": [
+    "vmware#identifier#_noui": [
       "VMWare #vmware# de #region# (ip: #ip#) esta sem acesso no /ui",
       "A VMWare de #region# #vmware# (ip: #ip#) está sem acesso no /ui"
     ]

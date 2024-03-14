@@ -22,10 +22,6 @@ const PORT = 8083;
 let to_html_commands = 'Esperando comando';
 const report_img_dir = './reports/brk/report_brk.png'; //diretorio da imagem do report
 
-// function sleep(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
 async function saveImage() {
   try {
     console.log("passo 3.5 [Puppeteer] tirando screenshot da pagina");
@@ -52,40 +48,16 @@ async function saveImage() {
   }
 };
 
-/*
-// Função para salvar a imagem em disco
-function saveImage(base64Data, fileName) {
-
-    console.log("entered on saveImage\n");
-
-    // Remove o prefixo "data:image/png;base64,"
-    const base64Image = base64Data.split(';base64,').pop();
-
-    // Cria um buffer a partir dos dados base64
-    const buffer = Buffer.from(base64Image, 'base64');
-
-    // Salva o buffer como um arquivo .png
-    fs.writeFile(fileName, buffer, (err) => {
-        if (err) {
-            console.error('Erro ao salvar a imagem:', err);
-        } else {
-            console.log(`Imagem salva como ${fileName}`);
-        }
-    });
-
-}
-*/
-
 function insertNewCommand(data){
-
     try{
+        console.log("Inserindo novo comando:");
 
         const titulo = data['titulo'];
         const descricao = data['descricao'];
         const sistema = data['sistema'];
         const arg = data['arg'];
 
-        console.log("Adicionando novo comando ao database: ", sistema + '[' + arg + ']');
+        console.log("Adicionando novo comando ao database: ", sistema + '[' + arg + ']', "titulo: ", titulo, "descricao: ", descricao);
 
         database.banco_problemas[sistema + "_" + arg] = [titulo, descricao];
 
@@ -98,7 +70,6 @@ function insertNewCommand(data){
     catch(error){
         console.log("Erro ao adicionar o comando: ", error);
     }
-
 }
 
 function CommandReader(command){
@@ -106,108 +77,118 @@ function CommandReader(command){
     //command = "/checklist report cartoes[nocollected] msaf[httpversion] ordens[timepass]";
     //command = "/checklist report vmwareSRVHVM004RMR[noui]";
 
-    console.log("comando recebido: ", command);
+    console.log("passo 1.0 comando recebido: ", command);
 
-    let identifier = command.match(/(?:vmware|unidade)(.+)\[/);
-
-    if(identifier) {
-        console.log("command identifier:", identifier[1]);
-        const OriginalCommand = command.replace(identifier[1], '#ip#');
-        console.log("comando depois:", OriginalCommand);
-        command = OriginalCommand;
-    }
-    else {
-        identifier = null;
-    }
-
-    //regex para separar os itens dos comandos
-    const rgx_command = /([A-Za-z-0-9#]+)\[([^\]]+)\]/g;
-    let command_matches = command.match(rgx_command);
-
-    console.log("passo 1.1 command_matches: ", command_matches);
+    //separar os itens dos comandos com regex
+    let command_matches = command.match(/([^\s\[]+)\[([^\]]+)\]/g);
+    console.log("passo 1.0.1 command_matches: ", command_matches);
 
     //verificar se existe ocorrencia da regex no comando e não 'null'
     if(command_matches){
+
+        console.log("passo 1.1 command_matches", command_matches);
         
         let parts, args, commands = {};
+
+        //objeto que será lido e transformado na parte visual. em 'identifier' caso ele não for null associe o valor nele.
+        commands = [];
 
         //iterar sobre cada ocorrencia no comando
         command_matches.forEach(function(match){
 
-            console.log("passo 1.2: match:", match);
+            console.log("passo 1.1.2 function(match): ", match);
 
-            //variavel que salva o sistema, conteudo passado antes dos colchetes 'msaf'[...]
-            let system = match.match(/^([A-Za-z-0-9#]+)\[/)[1];
+            let nome_sistema = match.match(/(.+)\[/)[1];
+            console.log("passo 1.1.3 nome_sistema: ", nome_sistema);
 
-            commands[system] = {
-                titulo_desc: [],
-                identifier: (identifier != null) ? identifier[1] : "",
-                args: []
+            //salvar match em sistema_args 'msaf[args]'
+            let sistema_args = match;
+            console.log("passo 1.2: sistema_args:", sistema_args);
+
+            //salvar o ip/hostname identificador caso exista no comando vmware'ip/hostname'[args]
+            let identifier = sistema_args.match(/(vmware|unidade)([^\s\[]+)/);
+
+            //caso exista um identificador, trocamos o ip/hostname para '#identifier#' pois já salvamos 'ip/hostname em' 'let identifier'
+            if(identifier) {
+                sistema_args = sistema_args.replace(identifier[2], '#identifier#');
+                console.log("passo 1.2.1 command identifier[1]: ", identifier[1], " | identifier[2]: ", identifier[2]);
+                console.log("passo 1.2.2 sistema_args: ", sistema_args);
+            }
+            else {
+                identifier = null;
+                console.log("passo 1.2.else problema nao possui identificador. setando 'null'");
             }
 
-            //Extraindo o tipo de comando e o argumento de cada correspondência
-            parts = match.split("[");
+            //variavel que salva o sistema, conteudo passado antes dos colchetes 'msaf'[...]
+            let system = sistema_args.match(/^([A-Za-z-0-9#]+)\[/)[1];
+            console.log("passo 1.2.3 system = sistema_args.match:", system);
+
+            //Extraindo o tipo de comando e o argumento de cada correspondência começando por '['
+            parts = sistema_args.split("[");
+            console.log("passo 1.2.4 parts = sistema_args: ", parts);
 
             //Remove o colchete de fechamento "]" // argumentos tem os conteudos dentro dos colchetes sistema['conteudo1,conteudo2...']
             let argumentos = parts[1].slice(0, -1);
+            console.log("passo 1.2.5 let argumentos: ", argumentos);
 
-            //regex para separar os argumentos passados nos colchetes ['']
-            const regex_argumentos = /([^\]]+)/;
-
-            args = argumentos.match(regex_argumentos).input.split(',').map(arg => arg.trim());
-
-            console.log("passo 1.3 args: ", args);
+            //separar os argumentos passados nos colchetes com regex ['']
+            args = argumentos.match(/([^\]]+)/).input.split(',').map(arg => arg.trim());
+            console.log("passo 1.2.6 args: ", args);
 
             args.forEach(function (problema_recebido){
 
+                console.log("passo 1.3.0 [forEach] problema_recebido: ", problema_recebido);
+
                 //vetor que vai salvar o problema atual 'titulo' - 'descricao problema'
-                let titulo_desc = [];
+                let titulo_desc;
 
                 //buscar o problema recebido no comando na lista de problemas
                 if(system + "_" + problema_recebido in database["banco_problemas"]){
 
+                    nome_sistema = system;
+                    let ip_or_host = null;
                     let titulo = database["banco_problemas"][system + "_" + problema_recebido][0];
                     let descricao = database["banco_problemas"][system + "_" + problema_recebido][1];
 
                     if(identifier != null){
-                        titulo = titulo.replace('#vmware#', identifier[1]);
+                        ip_or_host = identifier[2];
+                        titulo = titulo.replace('#vmware#', identifier[2]);
                         titulo = titulo.replace('#ip#', "192.168.0.4");
                         titulo = titulo.replace('#region#', "IGAOOESTEMAIS");
-                        descricao = descricao.replace('#vmware#', identifier[1]);
+                        descricao = descricao.replace('#vmware#', identifier[2]);
                         descricao = descricao.replace('#ip#', "192.168.0.4");
                         descricao = descricao.replace('#region#', "IGAOOESTEMAIS");
                     }
+                    else {
+                        nome_sistema = system;
+                    }
 
-                    titulo_desc.push(titulo); //titulo
-                    titulo_desc.push(descricao); //descricao
+                    console.log("passo 1.3.1 nome_sistema: ", nome_sistema);
 
-                    commands[system]["titulo_desc"] = titulo_desc; //adicionando titulo e descrição ao objeto
-                    //commands[system]["titulo_desc"].push(titulo_desc);
+                    //commands[system]["titulo_desc"] = titulo_desc; //adicionando titulo e descrição ao objeto
+                    titulo_desc = {
+                        titulo: titulo,
+                        descricao: descricao,
+                        arg: problema_recebido,
+                        identifier: ip_or_host
+                    };
                 }
+
+                commands.push(titulo_desc);
+                console.log("passo 1.4 commands after push: ", commands);
 
             });
 
-            commands[system]["args"] = args;
+            //commands[nome_sistema]["args"] = args;
 
         });
+
+        console.log("passo 1.5 retornando commands: ", commands);
 
         return {commands: commands};
     }
 
 }
-
-// app.post('/save-image', (req, res) => {
-//     const data = req.body;
-//     const imageDate = Object.keys(data)[0];
-//     const imageBase64 = data[imageDate]["image"];
-
-    
-//     saveImage(imageBase64, `./reports/brk/report_brk.png`);
-
-//     console.log("Imagem salva!");
-
-//     res.sendStatus(200);
-// });
 
 app.get('/commands', (req, res) => {
     res.send(to_html_commands);
@@ -289,3 +270,44 @@ app.use(express.static(path.join(__dirname)));
 app.listen(PORT, () => {
     console.log(`AZ-Reporter iniciado na porta: ${PORT}`);
 });
+
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+
+/*
+// Função para salvar a imagem em disco
+function saveImage(base64Data, fileName) {
+
+    console.log("entered on saveImage\n");
+
+    // Remove o prefixo "data:image/png;base64,"
+    const base64Image = base64Data.split(';base64,').pop();
+
+    // Cria um buffer a partir dos dados base64
+    const buffer = Buffer.from(base64Image, 'base64');
+
+    // Salva o buffer como um arquivo .png
+    fs.writeFile(fileName, buffer, (err) => {
+        if (err) {
+            console.error('Erro ao salvar a imagem:', err);
+        } else {
+            console.log(`Imagem salva como ${fileName}`);
+        }
+    });
+
+}
+*/
+
+// app.post('/save-image', (req, res) => {
+//     const data = req.body;
+//     const imageDate = Object.keys(data)[0];
+//     const imageBase64 = data[imageDate]["image"];
+
+    
+//     saveImage(imageBase64, `./reports/brk/report_brk.png`);
+
+//     console.log("Imagem salva!");
+
+//     res.sendStatus(200);
+// });
