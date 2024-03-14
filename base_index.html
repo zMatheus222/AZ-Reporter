@@ -4,58 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- <link rel="stylesheet" href="./data/css/style.css"> -->
     <style>
+        @font-face {
+            font-family: 'roc-grotesk' ;
+            src: url(./data/font/FontsFree-Net-RocGrotesk2.ttf) format('svg'); 
+            font-weight: normal;
+        }
         .background{
             background-color: #110044;
-            padding: 120px;
-            max-width: 1800px;
+            padding: 5px;
+            width: 774px;
+            height: 576px;
+        }
+        .mid{
+            display: flex;
+            justify-content: center;
         }
         .checklist_text{
-            font-family: Verdana;
+            font-family: 'roc-grotesk', sans-serif;
             font-weight: bold;
-            font-size: 35px;
+            font-size: 25px;
             color: white;
-            margin: 0px 50px 0px 0px;
+            margin: 0px 10px 0px 0px;
         }
         .vertical_line{
-            width: 10px;
-            height: 100px;
+            width: 6px;
+            height: 50px;
             background-color: chartreuse;
-            margin: 0px 50px 0px 50px;
+            margin: 0px 30px 0px 20px;
         }
         .top{
             display: flex;
             align-items: center;
         }
         .logoempresa{
-            width: 230px;
-            height: 120px;
-            padding: 25px;
+            width: 120px;
+            padding: 15px;
         }
         .az-logo{
-            width: 250px;
-            height: 75px;
+            width: 150px;
+            height: 50px;
             padding: 25px;
         }
         .detail_blue_red{
-            width: 110px;
-            height: 110px;
-            margin: 0px 0px 0px 45px;
+            width: 50px;
+            height: 50px;
+            margin: 0px 0px 0px 15px;
         }
         .container{
             background-color: #21008f;
-            width: 1350px;
-            height: 200px;
-            border-top-left-radius: 70px;
-            border-top-right-radius: 20px;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            margin: 40px 0px 40px 0px;
+            width: 750px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 5px;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            margin: 5px 0px 5px 0px;
             display: flex;
             align-items: center;
         }
         .container_left{
-            padding: 0px 40px 0px 40px;
+            padding: 0px 10px 0px 10px;
         }
         .container_right{
             display: block;
@@ -65,19 +74,22 @@
             justify-content: end;
         }
         .gota{
-            width: 35px;
+            width: 15px;
+            margin: 0px 15px 0px 15px;
         }
         .titulo_report{
-            font-family: Verdana;
+            font-family: 'roc-grotesk', sans-serif;
             font-weight: bold;
-            font-size: 25px;
+            font-size: 15px;
             color: white;
         }
-        .descricao_report{
-            font-family: Verdana;
-            font-weight: normal;
-            font-size: 20px;
+        .descricao_report, .bottom_text{
+            font-family: 'roc-grotesk', sans-serif;
+            font-size: 11px;
             color: white;
+        }
+        .bottom_text{
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -85,21 +97,22 @@
     <div class="background" id="background">
 
         <!-- <div class="top">
-            <img src="teste/brk.png" class="logoempresa">
+            <img src="data/img/brk.png" class="logoempresa">
             <div class="vertical_line"></div>
             <a class="checklist_text">CHECKLIST</a>
-            <img src="teste/redb.png" class="detail_blue_red">
+            <img src="data/img/redb.png" class="detail_blue_red">
         </div>
 
         <div class="mid">
 
             <div class="container">
                 <div class="container_left">
-                    <img src="teste/gota.png" class="gota">
+                    <img src="data/img/gota.png" class="gota">
                 </div>
                 <div class="container_right">
                     <h1 class="titulo_report">VMWare de LDR LDR23PTH001 está sem trazer métricas</h1>
-                    <p class="descricao_report">VMWare está sem acesso no /ui</p>
+                    <p class="descricao_report">Descrição: VMWare está sem acesso no /ui</p>
+                    <p class="bottom_text">Retorno do cliente: x x x</p>
                 </div>
             </div>
 
@@ -107,7 +120,7 @@
 
         <div class="bot">
             <div class="bot_right">
-                <img src="azcorp.png" class="az-logo">
+                <img src="./azcorp.png" class="az-logo">
             </div>
         </div> -->
 
