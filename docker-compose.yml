@@ -10,3 +10,4 @@ services:
       - ./package.json:/home/node/app/package.json
       - ./data/js/DOM_updater.js:/home/node/app/data/js/DOM_updater.js
       - ./data/json/database.json:/home/node/app/data/json/database.json
+      - ./base_index.html:/home/node/app/base_index.html
