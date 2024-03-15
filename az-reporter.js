@@ -3,6 +3,8 @@ const cors = require('cors');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 
+const crypto = require('crypto');
+
 const database_dir = './data/json/database.json';
 
 let database = require(database_dir);
@@ -20,32 +22,80 @@ app.use(express.static('reports/brk')); //rota que serve os arquivos estaticos n
 const PORT = 8083;
 
 let to_html_commands = 'Esperando comando';
-const report_img_dir = './reports/brk/report_brk.png'; //diretorio da imagem do report
 
-async function saveImage() {
-  try {
-    console.log("passo 3.5 [Puppeteer] tirando screenshot da pagina");
+function generateToken(length) {
+    const randomBytes = crypto.randomBytes(length);
+    return randomBytes.toString('hex');
+  }
 
-    const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
+function getCurrentDateTime() {
+    const currentDate = new Date();
 
-    //const browser = await puppeteer.launch();
+    const year = String(currentDate.getFullYear()).slice(-2);
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+
+    const formattedDateTime = `${day}_${month}_${year}_${hours}_${minutes}`;
+    return formattedDateTime;
+}
+
+async function saveImage(img_name) {
+
+    const report_img_dir = `./reports/brk/${img_name}`; //diretorio da imagem do report
+
+    console.log("passo 3.5 report_img_dir: ", report_img_dir, " | img_name: ", img_name);
+
+    try {
     
-    console.log("passo 3.6 acessando page.goto('ip')");
-    const page = await browser.newPage();
-    await page.goto('http://localhost:8083');
-    //await sleep(3000);
-    if(!fs.existsSync(report_img_dir)) {
-        await page.screenshot({ path: report_img_dir });
-        console.log("passo 3.7 screenshot salva em: ", report_img_dir);
+        console.log("passo 3.6 [Puppeteer] tirando screenshot da pagina");
+
+        const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
+
+        //const browser = await puppeteer.launch();
+        
+        console.log("passo 3.7 acessando page.goto('ip')");
+        const page = await browser.newPage();
+
+        // // Configurando a resolução da viewport
+        // await page.setViewport({
+        //     width: 1774, // largura desejada
+        //     height: 1576, // altura desejada
+        //     deviceScaleFactor: 1,
+        // });
+
+        await page.goto('http://localhost:8083');
+
+        // Obtenha as dimensões da página atual usando o page.evaluate()
+        const dimensions = await page.evaluate(() => {
+            const backgroundDiv = document.querySelector('.background');
+            return {
+                width: backgroundDiv.offsetWidth,
+                height: backgroundDiv.offsetHeight,
+            };
+        });
+
+        console.log("dimensions: ", dimensions);
+
+        // Defina a viewport para corresponder ao tamanho da página original
+        await page.setViewport(dimensions);
+
+        //await sleep(3000);
+        if(!fs.existsSync(report_img_dir)) {
+            await page.screenshot({ path: report_img_dir });
+            console.log("passo 3.8 nova imagem salva em: ", report_img_dir);
+        }
+        else{
+            console.log("passo 3.8.else imagem já existe no diretório, substituindo em: ", report_img_dir);
+            await page.screenshot({ path: report_img_dir });
+        }
+        await browser.close();
     }
-    else{
-        console.log("passo 3.7 imagem já existe no diretório, pulando screenshot");
+    catch (error) {
+        console.error('passo 3.9 Ocorreu um erro:', error);
     }
-    await browser.close();
-  }
-  catch (error) {
-    console.error('passo 3.7 Ocorreu um erro:', error);
-  }
 };
 
 function insertNewCommand(data){
@@ -198,18 +248,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/checklist', async (req, res) => {
 
-    console.log("passo 1, entrou no /checklist");
-
-    if (req.body.token !== 'u5s3ewim5t8i5g7wc8urd8zhjo') {
-        return res.status(403).send('Token inválido');
-    }
-
-    const response = `Bom dia segue o report: '${req.body.command}'`;
-    to_html_commands = CommandReader(req.body.command + " " + req.body.text);
-
-    console.log("passo 2 apagando arquivo anterior");
-
     try{
+
+        console.log("passo 1, entrou no /checklist");
+
+        if (req.body.token !== 'u5s3ewim5t8i5g7wc8urd8zhjo') return res.status(403).send('Mattermost Token inválido');
+
+        //const response = `Bom dia segue o report: '${req.body.command}'`;
+        to_html_commands = CommandReader(req.body.command + " " + req.body.text);
+
+        const actual_datehours = getCurrentDateTime();
+        const command_token = generateToken(5);
+
+        console.log("actual_datehours: ", actual_datehours);
+        console.log("command_token: ", command_token);
+
+        /*
+        console.log("passo 2 apagando arquivo anterior");
         // deletar diretorio para depois escrever novamente
         if (fs.existsSync(report_img_dir)) {
             await fs.promises.unlink(report_img_dir);
@@ -218,27 +273,29 @@ app.post('/checklist', async (req, res) => {
         else {
             console.log("Imagem não existe no diretório " + report_img_dir + " não foi necessário apaga-la");
         }
+        */
 
         console.log("passo 3.0, antes de chamar UpdateDOM();");
 
         await UpdateDOM();
         console.log("passo 3.4, passou do UpdateDOM(); antes de chamar await saveImage();");
-        await saveImage();
+
+        const image_name = `report_brk_${actual_datehours}_${command_token}.png`;
+
+        await saveImage(image_name);
         console.log("passo 4.0, passou do await saveImage();");
 
-        const imageBuffer = fs.readFileSync(__dirname + '/reports/brk/report_brk.png');
+        //const imageBuffer = fs.readFileSync(__dirname + '/reports/brk/report_brk.png');
 
-        const imageBase64 = Buffer.from(imageBuffer).toString('base64');
+        //const imageBase64 = Buffer.from(imageBuffer).toString('base64');
 
-        console.log("passo final, enviando res.json({})");
-
+        console.log("passo 4.1 final, enviando res.json({})");
+        
+        const fileServerPathUrl = `http://192.168.0.4:8083/reports/brk/${image_name}`;
+        
         res.json({
             response_type: 'in_channel',
-            text: response,
-            attachments: [{
-                image_url: `data:image/png;base64,${imageBase64}`,
-                text: 'Aqui está o resumo em forma de imagem'
-            }]
+            text: fileServerPathUrl
         });
     }
     catch{

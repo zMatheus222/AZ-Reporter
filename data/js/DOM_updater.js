@@ -10,8 +10,6 @@ async function UpdateDOM() {
 
       fetch('http://localhost:8083/commands').then(response => response.json()).then(data => {
 
-          console.log("passo 3.1 data: ", data);
-
           console.log("passo 3.1, antes de pegar base_index.html");
 
           const html_content = fs.readFileSync('./base_index.html', 'utf8');
@@ -53,15 +51,15 @@ async function UpdateDOM() {
           div_top.appendChild(img_blue_red);
           mainElement.appendChild(div_top);
 
+          //<div class="mid">
+          const div_mid = document.createElement('div');
+          div_mid.classList.add('mid');
+
           Object.keys(data["commands"]).forEach((row) => {
 
             console.log("passo 3.3, inserindo elementos | titulo | descricao: ");
             console.log("data[commands][row].titulo: ", data['commands'][row].titulo);
             console.log("data[commands][row].descricao: ", data['commands'][row].descricao);
-
-            //<div class="mid">
-            const div_mid = document.createElement('div');
-            div_mid.classList.add('mid');
 
             //<div class="container">
             const div_container = document.createElement('div');
@@ -106,28 +104,32 @@ async function UpdateDOM() {
 
         });
 
-          //<div class="bot">
-          const div_bot = document.createElement('div');
-          div_bot.classList.add('bot');
+        const mid = mainElement.querySelector('.mid'); 
+        const containers = mid.querySelectorAll('.container');
 
-          //<div class="bot_right">
-          const div_bot_right = document.createElement('div');
-          div_bot_right.classList.add('bot_right');
+        if (containers.length > 5) mid.classList.add('grid');
 
-          //<img src="azcorp.png" class="az-logo">
-          const img_azcorp = document.createElement('img');
-          img_azcorp.classList.add('az-logo');
-          img_azcorp.src = 'azcorp.png';
+        //<div class="bot">
+        const div_bot = document.createElement('div');
+        div_bot.classList.add('bot');
 
-          div_bot_right.appendChild(img_azcorp);
-          div_bot.appendChild(div_bot_right);
-          mainElement.appendChild(div_bot);
+        //<div class="bot_right">
+        const div_bot_right = document.createElement('div');
+        div_bot_right.classList.add('bot_right');
 
-          console.log("passo 3.4, terminou de inserir os dados (3x appendChild();)");
-          
-          const htmlContent = dom.serialize();
-          console.log("final htmlContent: ", htmlContent);
-          fs.writeFileSync('index.html', htmlContent);
+        //<img src="azcorp.png" class="az-logo">
+        const img_azcorp = document.createElement('img');
+        img_azcorp.classList.add('az-logo');
+        img_azcorp.src = 'azcorp.png';
+
+        div_bot_right.appendChild(img_azcorp);
+        div_bot.appendChild(div_bot_right);
+        mainElement.appendChild(div_bot);
+
+        console.log("passo 3.4, terminou de inserir os dados (3x appendChild();)");
+        
+        const htmlContent = dom.serialize();
+        fs.writeFileSync('index.html', htmlContent);
 
           resolve();
 
