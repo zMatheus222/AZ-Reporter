@@ -45,7 +45,7 @@ async function UpdateDOM() {
 
           //<img src="./data/img/linhaII.png" alt="" style="height: 45px; margin-left: 10px; margin-top: -15px; ">
           const img_linhaII = document.createElement('img');
-          img_linhaII.src = './data/img/linhall.png';
+          img_linhaII.src = './data/img/green.png';
           img_linhaII.style.height = '45px';
           img_linhaII.style.marginLeft = '10px';
           img_linhaII.style.marginTop = '-15px';
@@ -68,7 +68,7 @@ async function UpdateDOM() {
 
           //<img src="./data/img/formaII.png" alt="" style="height: 60px; margin-left: 10px; margin-top: -5px;">
           const img_formaII = document.createElement('img');
-          img_formaII.src = './data/img/formall.png';
+          img_formaII.src = './data/img/form.png';
           img_formaII.style.height = '60px';
           img_formaII.style.marginLeft = '10px';
           img_formaII.style.marginTop = '-5px';
@@ -104,7 +104,7 @@ async function UpdateDOM() {
             //<img class="info" src="./data/img/gotall.png" alt="" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;">
             const img_gota = document.createElement('img');
             img_gota.classList.add('info');
-            img_gota.src = './data/img/gotall.png';
+            img_gota.src = './data/img/gota.png';
             img_gota.style.height = '30px';
             img_gota.style.position = 'absolute';
             img_gota.style.marginTop = '40px';
