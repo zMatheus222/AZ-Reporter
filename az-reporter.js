@@ -26,7 +26,7 @@ let to_html_commands = 'Esperando comando';
 function generateToken(length) {
     const randomBytes = crypto.randomBytes(length);
     return randomBytes.toString('hex');
-  }
+}
 
 function getCurrentDateTime() {
     const currentDate = new Date();
@@ -70,7 +70,7 @@ async function saveImage(img_name) {
 
         // Obtenha as dimensões da página atual usando o page.evaluate()
         const dimensions = await page.evaluate(() => {
-            const backgroundDiv = document.querySelector('.background');
+            const backgroundDiv = document.querySelector('.div_global');
             return {
                 width: backgroundDiv.offsetWidth,
                 height: backgroundDiv.offsetHeight,

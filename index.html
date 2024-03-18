@@ -6,127 +6,112 @@
     <style>
         @font-face {
             font-family: 'roc-grotesk' ;
-            src: url(./data/font/FontsFree-Net-RocGrotesk2.ttf) format('svg'); 
-            font-weight: normal;
-        }
-        .background{
-            background-color: #110044;
-            padding: 5px;
-            width: 1530px;
-        }
-        .mid{
-            display: block;
-        }
-        .checklist_text{
-            font-family: 'roc-grotesk', sans-serif;
+            src: url(/data/font/FontsFree-Net-RocGrotesk2.ttf) format('svg'); 
             font-weight: bold;
-            font-size: 25px;
-            color: white;
-            margin: 0px 10px 0px 0px;
         }
-        .vertical_line{
-            width: 6px;
-            height: 50px;
-            background-color: chartreuse;
-            margin: 0px 30px 0px 20px;
-        }
-        .top{
+        body {
+            
+            background-color:  #ffffff;
+            color: rgb(255, 255, 255);
             display: flex;
             align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+
         }
-        .logoempresa{
-            width: 120px;
-            padding: 15px;
-        }
-        .az-logo{
-            width: 150px;
-            height: 50px;
-            padding: 25px;
-        }
-        .detail_blue_red{
-            width: 50px;
-            height: 50px;
-            margin: 0px 0px 0px 15px;
-        }
-        .container{
-            background-color: #21008f;
-            width: 750px;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 5px;
-            border-bottom-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-            margin: 5px 0px 5px 0px;
-            display: flex;
+        .container {
+            max-width: 750px;
             align-items: center;
-        }
-        .container_left{
-            padding: 0px 10px 0px 10px;
-        }
-        .container_right{
-            display: block;
-        }
-        .bot_right{
-            display: flex;
-            justify-content: end;
-        }
-        .gota{
-            width: 15px;
-            margin: 0px 15px 0px 15px;
-        }
-        .titulo_report{
-            font-family: 'roc-grotesk', sans-serif;
-            font-weight: bold;
-            font-size: 15px;
-            color: white;
-        }
-        .descricao_report, .bottom_text{
-            font-family: 'roc-grotesk', sans-serif;
-            font-size: 11px;
-            color: white;
-        }
-        .bottom_text{
-            margin-bottom: 10px;
-        }
-        .grid {
+            margin: 12px;
+            background-color: rgba(56, 0, 255, 0.4);
+            border-radius: 30px 10px 10px 0px;
+            position: relative;
+            justify-content: left;
+            margin-top: 30px;
+            
+        
+        }    
+        #main_container{
             display: grid;
-            grid-template-columns: repeat(2, minmax(300px, 1fr));
+            justify-content: center;
+            grid-template-columns: repeat(2, 1fr); /* Inicialmente, 1 coluna */
+            gap: 0px; /* Espaço entre os itens */
+        }
+        .div_global {
+            width: 750px;
+            min-width: 750px;
+            max-width: 750px;
+            text-align: left;
+            padding: 20px 20px 20px 20px;
+            background-color: #110044;
+            border-radius: 10px;
+        }
+        .info {
+            text-align: left;
+            font-family: 'roc-grotesk', sans-serif;
+            font-size: 15px;
+            margin-left: 60px;
+            padding: 15px 15px 10px 0px;
+            margin-bottom: -10px;
+            margin-top: -5px;
+
+        }
+
+        .input_{
+            width: 700px;
+            min-width: 700px;
+            max-width: 700px;
+            border-style: none;
+            background-color: rgb(240, 248, 255, 0.0);
+            color: rgb(255, 255, 255);
+            font-family: 'roc-grotesk', sans-serif;
+        }
+        .input_title{
+            font-size: 15px;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+        .input_desc{
+            font-size: 13px;
+        }
+        .input_report{
+            font-size: 10px;
+        }
+
+        .marcadagua{
+            display: flex;
+            justify-content: right;
+        }
+        .title {
+            margin: 12px;
+            display: flex;
+            justify-content: left;
+            align-items: center;
         }
     </style>
 </head>
 <body>
-    <div class="background" id="background">
-
-        <!-- <div class="top">
-            <img src="data/img/brk.png" class="logoempresa">
-            <div class="vertical_line"></div>
-            <a class="checklist_text">CHECKLIST</a>
-            <img src="data/img/redb.png" class="detail_blue_red">
+    <div class="div_global" id="div_global">
+        <!--
+        <div class='title'>
+            <h1 class="title">
+                <div><img src="logobrk.png" alt=""style="height:60px;"></div>
+                <div><img src="./data/img/linhaII.png" alt="" style="height: 45px; margin-left: 10px; margin-top: -15px; "></div>
+                <div><p style="font-size: 15px; font-family: 'roc-grotesk', sans-serif; font-style: bold; margin-left: 10px; margin-top: -3px; height:10px;">CHECKLIST</p></div>
+                <div><img src="./data/img/formaII.png" alt="" style="height: 60px; margin-left: 10px; margin-top: -5px;"></div>
+            </h1>
         </div>
-
-        <div class="mid">
-
+        <div id="main_container">
             <div class="container">
-                <div class="container_left">
-                    <img src="data/img/gota.png" class="gota">
-                </div>
-                <div class="container_right">
-                    <h1 class="titulo_report">VMWare de LDR LDR23PTH001 está sem trazer métricas</h1>
-                    <p class="descricao_report">Descrição: VMWare está sem acesso no /ui</p>
-                    <p class="bottom_text">Retorno do cliente: x x x</p>
-                </div>
+                <img class="info" src="./data/img/gotaII.png" alt="" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;">
+                <h2 class="info" id="problema">A VMWare (SRVHVM001PDL ip: 10.156.180.11) sem trazer métricas e com acesso muito lento no /ui.</h2> 
+                <p class="info" id="reportado">Reportado ao Marcos Paulo no grupo Observability - Monitoramento Esxi VMware.</p> 
+                <h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5>
             </div>
-
-        </div>
-
-        <div class="bot">
-            <div class="bot_right">
-                <img src="./azcorp.png" class="az-logo">
-            </div>
-        </div> -->
-
-    <div class="top"><img class="logoempresa" src="data/img/brk.png"><div class="vertical_line"></div><a class="checklist_text">CHECKLIST</a><img class="detail_blue_red" src="data/img/redb.png"></div><div class="mid"><div class="container"><div class="container_left"><img class="gota" src="data/img/gota.png"></div><div class="container_right"><h1 class="titulo_report">Ordens de serviço</h1><p class="descricao_report">passando dos 40min</p><div class="bottom_text">Retorno do cliente: x x x</div></div></div><div class="container"><div class="container_left"><img class="gota" src="data/img/gota.png"></div><div class="container_right"><h1 class="titulo_report">VMWare 192.168.2.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h1><p class="descricao_report">A VMWare de IGAOOESTEMAIS 192.168.2.4 (ip: 192.168.0.4) está sem acesso no /ui</p><div class="bottom_text">Retorno do cliente: x x x</div></div></div><div class="container"><div class="container_left"><img class="gota" src="data/img/gota.png"></div><div class="container_right"><h1 class="titulo_report">VMWare 192.168.2.5 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h1><p class="descricao_report">A VMWare de IGAOOESTEMAIS 192.168.2.5 (ip: 192.168.0.4) está sem acesso no /ui</p><div class="bottom_text">Retorno do cliente: x x x</div></div></div><div class="container"><div class="container_left"><img class="gota" src="data/img/gota.png"></div><div class="container_right"><h1 class="titulo_report">VMWare 192.168.2.6 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h1><p class="descricao_report">A VMWare de IGAOOESTEMAIS 192.168.2.6 (ip: 192.168.0.4) está sem acesso no /ui</p><div class="bottom_text">Retorno do cliente: x x x</div></div></div></div><div class="bot"><div class="bot_right"><img class="az-logo" src="azcorp.png"></div></div></div>
-    <script>
-
-    </script>
+        </div> 
+        <br>
+        <div class="marcadagua"><img src="./data/img/logoaz.png" style="width: 15%;"></div>
+        -->
+    <div class="main_title"><h1 class="title"><div><img src="./data/img/brk.png" style="height: 60px;"></div><div><img src="./data/img/linhall.png" style="height: 45px; margin-left: 10px; margin-top: -15px;"></div><div><p style="font-size: 15px; font-family: 'roc-grotesk', sans-serif; font-style: bold; margin-left: 10px; margin-top: -3px; height: 10px;">CHECKLIST</p></div><div><img src="./data/img/formall.png" style="height: 60px; margin-left: 10px; margin-top: -5px;"></div></h1></div><div id="main_container" style="display: grid;"><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">Mastersaf apresentando Status Down</h2><p class="info" id="reportado">Mastersaf com problema de Status Down</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">Ordens de serviço</h2><p class="info" id="reportado">passando dos 40min</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div><div class="container"><img class="info" src="./data/img/gotall.png" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;"><h2 class="info" id="problema">VMWare 192.168.0.4 de IGAOOESTEMAIS (ip: 192.168.0.4) esta sem acesso no /ui</h2><p class="info" id="reportado">A VMWare de IGAOOESTEMAIS 192.168.0.4 (ip: 192.168.0.4) está sem acesso no /ui</p><h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5></div></div><br><div class="marcadagua"><img src="./data/img/logoaz.png" style="width: 15%;"></div></div>
 
 </body></html>
