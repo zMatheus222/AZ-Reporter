@@ -38,26 +38,26 @@ async function UpdateDOM() {
           //<img src="logobrk.png" alt="" style="height:60px;">
           const img_logo_empresa = document.createElement('img');
           img_logo_empresa.src = './data/img/brk.png';
-          img_logo_empresa.style.height = '60px';
+          img_logo_empresa.style.height = '160px';
 
           //<div>
           const div2 = document.createElement('div');
           div2.classList.add('green');
 
           //<img src="./data/img/green.png" alt="" style="height: 45px; margin-left: 10px; margin-top: -15px; ">
-          const img_linhaII = document.createElement('img');
-          img_linhaII.src = './data/img/green.png';
-          img_linhaII.style.height = '45px';
-          img_linhaII.style.marginLeft = '10px';
-          img_linhaII.style.marginTop = '-15px';
+          // const img_linhaII = document.createElement('img');
+          // img_linhaII.src = './data/img/green.png';
+          // img_linhaII.style.height = '45px';
+          // img_linhaII.style.marginLeft = '10px';
+          // img_linhaII.style.marginTop = '-15px';
 
           //<div>
           const div3 = document.createElement('div');
 
           //<p style="font-size: 15px; font-family: 'roc-grotesk', sans-serif; font-style: bold; margin-left: 10px; margin-top: -3px; height:10px;">CHECKLIST</p>
           const p_checklist_text = document.createElement('p');
-          p_checklist_text.style.fontSize = '15px';
-          p_checklist_text.style.fontFamily = "'roc-grotesk', sans-serif";
+          p_checklist_text.style.fontSize = '44px';
+          p_checklist_text.style.fontFamily = "'Roboto Condensed', sans-serif";
           p_checklist_text.style.fontStyle = 'bold';
           p_checklist_text.style.marginLeft = '10px';
           p_checklist_text.style.marginTop = '-3px';
@@ -141,7 +141,7 @@ async function UpdateDOM() {
           
           //i contagem de reports
 
-          (i > 8) ? main_container.style.display = 'grid' : main_container.style.display = 'block';
+          (i > 3) ? main_container.style.display = 'grid' : main_container.style.display = 'block';
 
           div_global.appendChild(main_container);
           
