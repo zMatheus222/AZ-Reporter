@@ -12,3 +12,4 @@ services:
       - ./data/json/database.json:/home/node/app/data/json/database.json
       - ./base_index.html:/home/node/app/base_index.html
       - ./index.html:/home/node/app/index.html
+      - ./data/img:/home/node/app/data/img

@@ -42,8 +42,9 @@ async function UpdateDOM() {
 
           //<div>
           const div2 = document.createElement('div');
+          div2.classList.add('green');
 
-          //<img src="./data/img/linhaII.png" alt="" style="height: 45px; margin-left: 10px; margin-top: -15px; ">
+          //<img src="./data/img/green.png" alt="" style="height: 45px; margin-left: 10px; margin-top: -15px; ">
           const img_linhaII = document.createElement('img');
           img_linhaII.src = './data/img/green.png';
           img_linhaII.style.height = '45px';
@@ -65,7 +66,7 @@ async function UpdateDOM() {
 
           //<div>
           const div4 = document.createElement('div');
-
+          
           //<img src="./data/img/formaII.png" alt="" style="height: 60px; margin-left: 10px; margin-top: -5px;">
           const img_formaII = document.createElement('img');
           img_formaII.src = './data/img/form.png';
@@ -78,13 +79,13 @@ async function UpdateDOM() {
 
           div_main_title.appendChild(h1_title);
 
-          div2.appendChild(img_linhaII);
           h1_title.appendChild(div2);
           
           div3.appendChild(p_checklist_text);
           h1_title.appendChild(div3);
 
           div4.appendChild(img_formaII);
+
           h1_title.appendChild(div4);
 
           div_global.appendChild(div_main_title);

@@ -42,6 +42,10 @@ function getCurrentDateTime() {
     return formattedDateTime;
 }
 
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+
 async function saveImage(img_name) {
 
     const report_img_dir = `./reports/brk/${img_name}`; //diretorio da imagem do report
@@ -59,13 +63,6 @@ async function saveImage(img_name) {
         console.log("passo 3.7 acessando page.goto('ip')");
         const page = await browser.newPage();
 
-        // // Configurando a resolução da viewport
-        // await page.setViewport({
-        //     width: 1774, // largura desejada
-        //     height: 1576, // altura desejada
-        //     deviceScaleFactor: 1,
-        // });
-
         await page.goto('http://localhost:8083');
 
         // Obtenha as dimensões da página atual usando o page.evaluate()
@@ -77,12 +74,18 @@ async function saveImage(img_name) {
             };
         });
 
+        // Configurando a resolução da viewport
+        await page.setViewport({
+            width: dimensions.width, // largura desejada
+            height: dimensions.height, // altura desejada
+            deviceScaleFactor: 1,
+        });
+
         console.log("dimensions: ", dimensions);
 
         // Defina a viewport para corresponder ao tamanho da página original
-        await page.setViewport(dimensions);
+        //await page.setViewport(dimensions);
 
-        //await sleep(3000);
         if(!fs.existsSync(report_img_dir)) {
             await page.screenshot({ path: report_img_dir });
             console.log("passo 3.8 nova imagem salva em: ", report_img_dir);
