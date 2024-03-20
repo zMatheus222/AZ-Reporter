@@ -1,0 +1,62 @@
+{
+    "brk": {
+        "UnidadesControle": {
+            "Args": {
+                "nossh": {
+                    "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+                    "descricao": "A Unidade {hostname} de {region} ({regshort}) IP: {ip} está sem trazer métricas e sem acesso SSH."
+                },
+                "noagent": {
+                    "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+                    "descricao": "A Unidade {hostname} de {region} ({regshort}) IP: {ip} está com acesso SSH porém sem trazer métricas."
+                }
+            },
+            "List": {
+                "SRVPTH001APG": {
+                    "IP": "10.156.84.94",
+                    "UNIDADE": "APARECIDA DE GOIANIA"
+                },
+                "SRVPTH001BLU": {
+                    "IP": "10.156.18.21",
+                    "UNIDADE": "BLUMENAU"
+                }
+            }
+        },
+        "VMWares": {
+            "Args": {
+                "noui": {
+                    "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+                    "descricao": "A VMWare {hostname} de {region} ({regshort}) IP: {ip} está sem trazer métricas e sem acesso no /ui."
+                },
+                "nologin": {
+                    "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+                    "descricao": "A VMWare {hostname} de {region} ({regshort}) IP: {ip} está com erro de login no /ui"
+                }
+            },
+            "List":{
+                "SRVHVM01RVD": {
+                    "Servidor": 76,
+                    "Port": 9200,
+                    "ContainerName": "vmware_exporter_rvd01",
+                    "Unidade": "RVD",
+                    "IP": "10.156.86.10"
+                },
+                "srvhvm02rvd": {
+                    "Servidor": 76,
+                    "Port": 9201,
+                    "ContainerName": "vmware_exporter_rvd02",
+                    "Unidade": "RVD",
+                    "IP": "10.156.86.20"
+                }
+            }
+        }
+    },
+    "Odonto": {
+        "Docpits": {
+
+        }
+    },
+    "Marfrig":{
+        
+    }
+}

@@ -19,41 +19,65 @@
     <div class="form">
         <h1>AZ-Reporter - Registre um Report</h1><br>
 
-        <label for="input_titulo">Titulo do problema</label><br>
-        <input type="text" id="input_titulo" placeholder="Sistema parou..."><br><br>
-
-        <label for="input_descricao">Descrição do problema</label><br>
-        <textarea id="input_descricao" placeholder="maquina x parou..."></textarea><br><br>
-
-
-
-        <label for="input_sys_type">Tipo de report</label><br>
+        <label for="input_sys_type">Selecionar Empresa</label><br>
         <select id="input_sys_type" name="input_sys_type">
-            <option selected>Instancia Linux</option>
-            <option>Exadata</option>
-            <option>VMWare</option>
         </select><br><br>
 
-
-
-
-
-        <label for="input_sistema">Sistema (/checklist report 'sistema')</label><br>
-        <input type="text" id="input_sistema" placeholder="sistema"><br><br>
-
-        <label for="input_arg">Argumento (/checklist report sistema['argumento'])</label><br>
-        <textarea id="input_arg" placeholder="['argumento']"></textarea><br><br>
-
-        <label for="input_reportchat">Chat de report</label><br>
-        <select id="input_reportchat" name="reportchat">
-            <option selected>O11Y - Alinhamento BRK</option>
-            <option>Observability - Monitoramento Esxi VMware</option>
-            <option>[Observability] - X8 Monitoramento</option>
+        <label for="input_itens_empresa">Selecionar Empresa</label><br>
+        <select id="input_itens_empresa" name="input_itens_empresa">
+            <!--
+            <option>UnidadesControle</option>
+            <option>VMWares</option>
+            -->
         </select><br><br>
+
         <button id="btnEnviar">Enviar</button>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            //<select id="input_sys_type" name="input_sys_type">
+            let SelectEmpresa = document.getElementById('input_sys_type');
+            SelectEmpresa.addEventListener('change', function() {
+                SelectEmpresa = document.getElementById('input_sys_type');
+                console.log("Empresa selecionada: ", SelectEmpresa.value);
+            });
+
+            fetch('./data/json/reportsbase.json').then((response) => response.json()).then((Reports) => {
+
+                Object.keys(Reports).forEach((empresa) =>{ //console.log("empresa....: ", empresa); // equivale a: brk: {
+                    //<option>empresa</option>
+                    const option_empresa = document.createElement('option');
+                    option_empresa.textContent = empresa;
+                    SelectEmpresa.appendChild(option_empresa);
+                });
+
+                console.log("SelectEmpresa.value: ", SelectEmpresa.value);
+
+                Object.keys(Reports).forEach((empresa) =>{
+
+
+
+                    console.log("item: ", empresa);
+                    console.log("item[SelectedValue]: ", empresa[SelectEmpresa.value]);
+
+
+
+
+                });
+                
+
+                // Object.keys(reports).forEach((empresa) =>{ //console.log("empresa....: ", empresa); // equivale a: brk: {
+
+                //     Object.keys(reports[empresa]).forEach((itemEmpresa) =>{ //console.log("  itensEmpresa: ", itemEmpresa); //equivale a UnidadesControle: {
+
+
+                //     });
+                // });
+                
+
+  
+            });
             
             const btnEnviar = document.getElementById('btnEnviar');
 

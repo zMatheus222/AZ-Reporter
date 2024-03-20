@@ -12,6 +12,7 @@ const path = require('path');
 const puppeteer = require('puppeteer'); //lib puppeteer semelhante aos sintéticos para tirar prints
 
 const UpdateDOM = require('./data/js/DOM_updater'); //importando arquivo js 'DOM_updater.js'
+const GetReports = require('./data/js/ReportMaker'); //importando arquivo js 'ReportMaker.js'
 
 const app = express();
 
@@ -326,6 +327,8 @@ app.post('/newcommand', (req, res) =>{
 });
 
 app.use(express.static(path.join(__dirname)));
+
+console.log("\nGetReports: ", GetReports());
 
 app.listen(PORT, () => {
     console.log(`AZ-Reporter iniciado na porta: ${PORT}`);
