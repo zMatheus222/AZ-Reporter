@@ -19,4 +19,4 @@ COPY --chown=node:node . .
 
 EXPOSE 8083
 
-CMD [ "node", "az-reporter.js" ]
+CMD [ "node", "az-reporter.mjs" ]

@@ -1,18 +1,36 @@
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs');
-const bodyParser = require('body-parser');
+//const express = require('express');
+import express from 'express';
 
-const crypto = require('crypto');
+//const cors = require('cors');
+import cors from 'cors';
 
-const database_dir = './data/json/database.json';
+//const fs = require('fs');
+import fs from 'fs';
 
-let database = require(database_dir);
-const path = require('path');
-const puppeteer = require('puppeteer'); //lib puppeteer semelhante aos sintéticos para tirar prints
+//const bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
 
-const UpdateDOM = require('./data/js/DOM_updater'); //importando arquivo js 'DOM_updater.js'
-const GetReports = require('./data/js/ReportMaker'); //importando arquivo js 'ReportMaker.js'
+//const crypto = require('crypto');
+import crypto from 'crypto';
+
+//const path = require('path');
+import path from 'path';
+
+//const puppeteer = require('puppeteer'); //lib puppeteer semelhante aos sintéticos para tirar prints
+import puppeteer from 'puppeteer';
+
+//const database_dir = './data/json/database.json';
+//let database = require(database_dir);
+
+import database_dir from "./data/json/database.json" assert { type: "json" };
+
+//const UpdateDOM = require('./data/js/DOM_updater.mjs'); //importando arquivo js 'DOM_updater.js'
+import UpdateDOM from './data/js/DOM_updater.mjs';
+
+//const MakeReportObjects = require('./data/js/ReportMaker'); //importando arquivo js 'ReportMaker.js'
+import MakeReportObjects from './data/js/ReportMaker.mjs';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const app = express();
 
@@ -328,7 +346,10 @@ app.post('/newcommand', (req, res) =>{
 
 app.use(express.static(path.join(__dirname)));
 
-console.log("\nGetReports: ", GetReports());
+// Chame MakeReportObjects para obter os grupos de Unidades e VMWares
+let xx = MakeReportObjects();
+
+console.log("MakedReportObjects", xx);
 
 app.listen(PORT, () => {
     console.log(`AZ-Reporter iniciado na porta: ${PORT}`);

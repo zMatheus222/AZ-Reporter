@@ -4,7 +4,8 @@
     "description": "nodejs image demo",
     "author": "AZCorp Tech - DOC",
     "license": "MIT",
-    "main": "az-reporter.js",
+    "main": "az-reporter.mjs",
+    "type": "module",
     "keywords": [
       "nodejs",
       "bootstrap",

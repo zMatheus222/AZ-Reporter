@@ -1,5 +1,8 @@
-const { JSDOM } = require('jsdom');
-const fs = require('fs');
+//const { JSDOM } = require('jsdom');
+import { JSDOM } from 'jsdom';
+
+//const fs = require('fs');
+import fs from 'fs';
 
 async function UpdateDOM() {
 
@@ -176,4 +179,5 @@ async function UpdateDOM() {
   });
 }
 
-module.exports = UpdateDOM;
+//module.exports = UpdateDOM;
+export default UpdateDOM;

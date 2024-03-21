@@ -13,104 +13,305 @@
             display: block;
             text-align: center;
         }
+        .iarea_add_item{
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="form">
         <h1>AZ-Reporter - Registre um Report</h1><br>
 
-        <label for="input_sys_type">Selecionar Empresa</label><br>
-        <select id="input_sys_type" name="input_sys_type">
+        <label for="select_empresa">Selecionar Empresa</label><br>
+        <select id="select_empresa">
+            <!--
+            <option>BRK</option>
+            <option>Odonto</option>
+            <option>Marfrig</option>
+            -->
         </select><br><br>
 
-        <label for="input_itens_empresa">Selecionar Empresa</label><br>
-        <select id="input_itens_empresa" name="input_itens_empresa">
+        <label for="select_sistema">Selecionar Sistema</label><br>
+        <select id="select_sistema">
             <!--
             <option>UnidadesControle</option>
             <option>VMWares</option>
             -->
         </select><br><br>
 
+        <label for="select_subsys">Selecionar Grupo a ser modificado</label><br>
+        <select id="select_subsys">
+            <!--
+            <option>Args</option>
+            <option>List</option>
+            -->
+        </select><br><br>
+
+        <button id="addnewitem">+ Novo Item</button><br><br>
+
+        <div class="iarea_add_item" id="iarea_add_item">
+            <!--
+            <label for="iarea_arg">Argumento:</label><br>
+            <input type="textarea" id="iarea_arg"  placeholder="exemplo: 'nologin'"/><br><br>
+    
+            <label for="iarea_title">Titulo:</label><br>
+            <input type="textarea" id="iarea_title" placeholder="Máquina 1 sem acesso..."/><br><br>
+    
+            <label for="iarea_description">Descrição:</label><br>
+            <input type="textarea" id="iarea_description" placeholder="Descrição do problema..."/><br><br><br>
+            -->
+        </div>
+
         <button id="btnEnviar">Enviar</button>
     </div>
-    <script>
+    <script type="module">
+        /*
+        //importando a função 'MakeReportObjects' e as 2 classes 'UnidadeControle' e 'VMWare'
+        import MakeReportObjects, { UnidadeControle, VMWare } from './data/js/ReportMaker.mjs';
+
+        function addElm(type){ return document.createElement(type); }
+        function getElm(id){ return document.getElementById(id); }
+
         document.addEventListener('DOMContentLoaded', function() {
 
-            //<select id="input_sys_type" name="input_sys_type">
-            let SelectEmpresa = document.getElementById('input_sys_type');
-            SelectEmpresa.addEventListener('change', function() {
-                SelectEmpresa = document.getElementById('input_sys_type');
-                console.log("Empresa selecionada: ", SelectEmpresa.value);
+            //<select id="select_empresa">
+            const select_empresa = getElm('select_empresa');
+            const select_sistema = getElm('select_sistema');
+            const select_subsys = getElm('select_subsys');
+
+            MakeReportObjects().then(AllGroups => {
+
+                console.log("AllGroups: ", AllGroups);
+                console.log("VMWare.Args: ", VMWare.Args);
+                console.log("UnidadeControle.Args: ", UnidadeControle.Args);
+
+                Object.keys(AllGroups).forEach((empresa) =>{ console.log("emp:", empresa);
+
+                    //adicionando opção das empresas
+                    const option_empresa = addElm('option');
+                    option_empresa.textContent = empresa;
+                    select_empresa.appendChild(option_empresa);
+                    
+                    Object.keys(AllGroups[empresa]).forEach((sys) =>{ console.log("\t sys: ", sys);
+
+                        const option_sistema = addElm('option');
+                        option_sistema.textContent = sys;
+                        select_sistema.appendChild(option_sistema);
+                        
+                        Object.keys(AllGroups[empresa][sys]).forEach((maquinaAtual) =>{ console.log("\t\t maquinaAtual: ", maquinaAtual);
+
+                            Object.keys(AllGroups[empresa][sys][maquinaAtual]).forEach((subitem) =>{ console.log("\t\t\t subitem: ", subitem);
+
+
+                            });
+
+                        });
+
+
+                    });
+
+                });
+
+
             });
+
+        });
+        */
+
+        document.addEventListener('DOMContentLoaded', function() {
 
             fetch('./data/json/reportsbase.json').then((response) => response.json()).then((Reports) => {
 
+                let SelectEmpresa = document.getElementById('select_empresa');
+                let SelectItensEmpresa = document.getElementById('select_sistema');
+                let SelectChangeGroups = document.getElementById('select_subsys');
+                let SelectSubSys = document.getElementById('select_subsys');
+                
+                const addNewItem = document.getElementById('addnewitem');
+                addNewItem.addEventListener('click', function(){
+                    (iarea_add_item.style.display !== "none") ? iarea_add_item.style.display = 'none' : iarea_add_item.style.display = 'block' ;
+                });
+
+                let iarea_add_item = document.getElementById('iarea_add_item');
+
+                //<br>
+                const br = document.createElement('br');
+                function Br(AppendedItem){ AppendedItem.appendChild(br.cloneNode()); }
+
+                function sendFormData(data){
+                    const jsonContent = JSON.stringify(data, null, 2);
+                    console.log("jsonContent: ", jsonContent);
+                }
+                    
+                function UpdateAddPanel(){
+
+                    //<div class="iarea_add_item" id="iarea_add_item">
+                    iarea_add_item = document.getElementById('iarea_add_item');
+                    
+                    //<button id="btnEnviar">Enviar</button>
+                    const btnEnviar = document.getElementById('btnEnviar');
+                    
+                    //variavel que guarda os dados a serem enviados
+                    let dataToSend = {};
+
+                    //variavel para guardar os itens dinâmicos de "List"
+                    let ListElements = [];
+
+                    console.log("SelectItensEmpresa.value: ", SelectItensEmpresa.value);
+                    console.log("SelectSubSys.value: ", SelectSubSys.value);
+
+                    if(SelectSubSys.value === "Args"){
+                        
+                        iarea_add_item.innerHTML = '';
+
+                        // <label for="iarea_arg">Argumento:</label><br>
+                        const label_iarea_arg = document.createElement('label');
+                        label_iarea_arg.htmlFor = 'iarea_arg';
+                        label_iarea_arg.textContent = 'Argumento:';
+
+                        // <input type="textarea" id="iarea_arg"  placeholder="exemplo: 'nologin'"/><br><br>
+                        const input_iarea_arg = document.createElement('input');
+                        input_iarea_arg.type = 'textarea';
+                        input_iarea_arg.id = 'iarea_arg:';
+                        input_iarea_arg.placeholder = 'exemplo: \'nologin\'';
+                
+                        // <label for="iarea_title">Titulo:</label><br>
+                        const label_iarea_title = document.createElement('label');
+                        label_iarea_title.htmlFor = 'iarea_title';
+                        label_iarea_title.textContent = 'Titulo:';
+
+                        // <input type="textarea" id="iarea_title" placeholder="Máquina 1 sem acesso..."/><br><br>
+                        const input_iarea_title = document.createElement('input');
+                        input_iarea_title.type = 'textarea';
+                        input_iarea_title.id = 'iarea_arg:';
+                        input_iarea_title.placeholder = 'Máquina 1 sem acesso...';
+                
+                        // <label for="iarea_description">Descrição:</label><br>
+                        const label_iarea_description = document.createElement('label');
+                        label_iarea_description.htmlFor = 'iarea_description';
+                        label_iarea_description.textContent = 'Descrição:';
+
+                        // <input type="textarea" id="iarea_description" placeholder="Descrição do problema..."/><br><br><br>
+                        const input_iarea_description = document.createElement('input');
+                        input_iarea_description.type = 'textarea';
+                        input_iarea_description.id = 'iarea_description:';
+                        input_iarea_description.placeholder = 'Descrição do problema...';
+                        
+                        iarea_add_item.appendChild(label_iarea_arg); Br(iarea_add_item);
+                        iarea_add_item.appendChild(input_iarea_arg); Br(iarea_add_item); Br(iarea_add_item);
+                        iarea_add_item.appendChild(label_iarea_title); Br(iarea_add_item);
+                        iarea_add_item.appendChild(input_iarea_title); Br(iarea_add_item); Br(iarea_add_item);
+                        iarea_add_item.appendChild(label_iarea_description); Br(iarea_add_item);
+                        iarea_add_item.appendChild(input_iarea_description); Br(iarea_add_item); Br(iarea_add_item); Br(iarea_add_item);
+
+                        btnEnviar.addEventListener('click', function() {
+
+                            dataToSend["Args"] = {
+                                "select_empresa": select_empresa.value,
+                                "select_sistema": select_sistema.value,
+                                "select_subsys:": select_subsys.value,
+                                "input_iarea_arg.value: ": input_iarea_arg.value,
+                                "input_iarea_title.value: ": input_iarea_title.value,
+                                "input_iarea_description.value: ": input_iarea_description.value
+                            };
+                            
+                            console.log("select_empresa: ", select_empresa.value);
+                            console.log("select_sistema: ", select_sistema.value);
+                            console.log("select_subsys: ", select_subsys.value);
+                            console.log("input_iarea_arg.value: ", input_iarea_arg.value);
+                            console.log("input_iarea_title.value: ", input_iarea_title.value);
+                            console.log("input_iarea_description.value: ", input_iarea_description.value);
+
+                            sendFormData(dataToSend);
+                        });
+                        
+                    }
+                    else if(SelectSubSys.value === "List"){
+
+                        iarea_add_item.innerHTML = '';
+
+                        const PropUnidades = Object.keys(Reports[SelectEmpresa.value][SelectItensEmpresa.value]["List"][0]);
+                        const UnidadePropCount = PropUnidades.length;
+
+                        console.log("Numero de propriedades nas Unidades: ", UnidadePropCount);
+                        
+                        for(let i = 0; i < UnidadePropCount; i++){
+
+                            const element_label = document.createElement('label');
+                            element_label.htmlFor = `label_${PropUnidades[i]}`;
+                            element_label.textContent = `Digite - ${PropUnidades[i]}:`;
+
+                            const element_input = document.createElement('input');
+                            element_input.type = 'textarea';
+                            element_input.id = `label_${PropUnidades[i]}`;
+
+                            iarea_add_item.appendChild(element_label); Br(iarea_add_item);
+                            iarea_add_item.appendChild(element_input); Br(iarea_add_item); Br(iarea_add_item);
+
+                            ListElements.push({[`label_${PropUnidades[i]}`]: element_input});
+
+                        }
+
+                        btnEnviar.addEventListener('click', function() {
+
+                            ListElements.forEach((item)=>{
+                                console.log("item: ", item);
+                            })
+                            
+                            sendFormData(dataToSend);
+                        
+                        });
+
+                        
+                        
+                    }
+                    
+                }
+
+                function appendSelect(SelectValue, AppendedItem){
+                    AppendedItem.innerHTML = ''; //limpar selects antes de fazer appendChild
+
+                    Object.keys(SelectValue).forEach((subItem) =>{
+                        //console.log("subItem: ", subItem);
+                        const option_item = document.createElement('option');
+                        option_item.textContent = subItem;
+                        AppendedItem.appendChild(option_item);
+                    });
+                }
+
+                function UpdateOptions() {
+
+                    //<select id="input_sys_type" name="input_sys_type">
+                    SelectEmpresa = document.getElementById('select_empresa');
+
+                    //<select id="input_itens_empresa" name="input_itens_empresa">
+                    SelectItensEmpresa = document.getElementById('select_sistema');
+
+                    //<select id="input_change_groups" name="input_change_groups">
+                    SelectChangeGroups = document.getElementById('select_subsys');
+
+                    appendSelect(Reports[SelectEmpresa.value], SelectItensEmpresa);
+                    appendSelect(Reports[SelectEmpresa.value][SelectItensEmpresa.value], SelectChangeGroups);
+                    
+                    console.log("SelectChangeGroups: ", SelectChangeGroups);
+
+                }
+
+                SelectEmpresa.addEventListener('change', UpdateOptions);
+
+                SelectSubSys.addEventListener('change', UpdateAddPanel);
+
+
                 Object.keys(Reports).forEach((empresa) =>{ //console.log("empresa....: ", empresa); // equivale a: brk: {
-                    //<option>empresa</option>
                     const option_empresa = document.createElement('option');
                     option_empresa.textContent = empresa;
                     SelectEmpresa.appendChild(option_empresa);
                 });
-
-                console.log("SelectEmpresa.value: ", SelectEmpresa.value);
-
-                Object.keys(Reports).forEach((empresa) =>{
-
-
-
-                    console.log("item: ", empresa);
-                    console.log("item[SelectedValue]: ", empresa[SelectEmpresa.value]);
-
-
-
-
-                });
                 
+                UpdateOptions();
+                UpdateAddPanel();
 
-                // Object.keys(reports).forEach((empresa) =>{ //console.log("empresa....: ", empresa); // equivale a: brk: {
-
-                //     Object.keys(reports[empresa]).forEach((itemEmpresa) =>{ //console.log("  itensEmpresa: ", itemEmpresa); //equivale a UnidadesControle: {
-
-
-                //     });
-                // });
-                
-
-  
-            });
-            
-            const btnEnviar = document.getElementById('btnEnviar');
-
-            function enviarDados() {
-
-                const data = {};
-
-                const inputs = document.querySelectorAll('[id^="input_"]');
-                console.log("all_inputs: ", inputs);
-                inputs.forEach((input, index) =>{
-                    console.log("input_id:", input.id, "| index:", index, "| input_value:", input.value);
-                    data[input.id.match(/input_(.+)/)[1]] = input.value;
-                });
-
-                fetch('http://localhost:8083/newcommand', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                }).then(response =>{
-                    if(!response.ok) {
-                        throw new Error('Erro ao enviar dados');
-                    }
-                    return response.json();
-                }).then(data => {
-                    console.log('Dados enviados com sucesso: ', data);
-                }).catch(error => {
-                    console.log("Error: ", error);
-                });
-            };
-
-            btnEnviar.addEventListener('click', enviarDados);
+        });
 
         });
     </script>

@@ -6,10 +6,10 @@ services:
     ports:
       - "8083:8083"
     volumes:
-      - ./az-reporter.js:/home/node/app/az-reporter.js
+      - ./az-reporter.mjs:/home/node/app/az-reporter.mjs
       - ./package.json:/home/node/app/package.json
-      - ./data/js/DOM_updater.js:/home/node/app/data/js/DOM_updater.js
-      - ./data/js/ReportMaker.js:/home/node/app/data/js/ReportMaker.js
+      - ./data/js/DOM_updater.mjs:/home/node/app/data/js/DOM_updater.mjs
+      - ./data/js/ReportMaker.mjs:/home/node/app/data/js/ReportMaker.mjs
       - ./data/json/database.json:/home/node/app/data/json/database.json
       - ./base_index.html:/home/node/app/base_index.html
       - ./index.html:/home/node/app/index.html

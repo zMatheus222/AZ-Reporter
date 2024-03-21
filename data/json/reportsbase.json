@@ -11,16 +11,18 @@
                     "descricao": "A Unidade {hostname} de {region} ({regshort}) IP: {ip} está com acesso SSH porém sem trazer métricas."
                 }
             },
-            "List": {
-                "SRVPTH001APG": {
+            "List": [
+                {
+                    "Hostname": "SRVPTH001APG",
                     "IP": "10.156.84.94",
                     "UNIDADE": "APARECIDA DE GOIANIA"
                 },
-                "SRVPTH001BLU": {
+                {
+                    "Hostname": "SRVPTH001BLU",
                     "IP": "10.156.18.21",
                     "UNIDADE": "BLUMENAU"
                 }
-            }
+            ]
         },
         "VMWares": {
             "Args": {
@@ -33,30 +35,36 @@
                     "descricao": "A VMWare {hostname} de {region} ({regshort}) IP: {ip} está com erro de login no /ui"
                 }
             },
-            "List":{
-                "SRVHVM01RVD": {
+            "List": [
+                {
+                    "Hostname": "SRVHVM01RVD",
                     "Servidor": 76,
                     "Port": 9200,
                     "ContainerName": "vmware_exporter_rvd01",
                     "Unidade": "RVD",
                     "IP": "10.156.86.10"
                 },
-                "srvhvm02rvd": {
+                {
+                    "Hostname": "srvhvm02rvd",
                     "Servidor": 76,
                     "Port": 9201,
                     "ContainerName": "vmware_exporter_rvd02",
                     "Unidade": "RVD",
                     "IP": "10.156.86.20"
                 }
-            }
+            ]
         }
     },
     "Odonto": {
-        "Docpits": {
-
+        "UnidadesControle": {
+        },
+        "VMWares": {
         }
     },
     "Marfrig":{
-        
+        "UnidadesControle": {
+        },
+        "VMWares": {
+        }
     }
 }
