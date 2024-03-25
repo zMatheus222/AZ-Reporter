@@ -1,19 +1,66 @@
 //const { JSDOM } = require('jsdom');
 import { JSDOM } from 'jsdom';
 
+import database from "./../json/reportsbase.json" assert { type: "json" };
+
 //const fs = require('fs');
 import fs from 'fs';
 
 async function UpdateDOM() {
+
+  console.log("[UpdateDOM] passo 1.0 entered on UpdateDOM function");
 
   return new Promise((resolve, reject) => {
 
     // Importando o node-fetch de forma compatível com CommonJS e módulos ES
     import('node-fetch').then(({ default: fetch }) => {
 
+      console.log("[UpdateDOM] passo 1.1 importando 'node-fetch'");
+
       fetch('http://localhost:8083/commands').then(response => response.json()).then(data => {
 
-          console.log("passo 3.1, antes de pegar base_index.html");
+          function createReportContainer(Titulo, Descricao, Retorno, ip){
+
+             //<div class="container">
+             const div_container = document.createElement('div');
+             div_container.classList.add('container');
+ 
+             //<img class="info" src="./data/img/gotall.png" alt="" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;">
+             const img_gota = document.createElement('img');
+             img_gota.classList.add('info');
+             img_gota.src = './data/img/gota.png';
+             img_gota.style.height = '30px';
+             img_gota.style.position = 'absolute';
+             img_gota.style.marginTop = '40px';
+             img_gota.style.marginLeft = '18px';
+ 
+             //<h2 class="info" id="problema">A VMWare (SRVHVM001PDL ip: 10.156.180.11) sem trazer métricas e com acesso muito lento no /ui.</h2>
+             const h2_title = document.createElement('h2');
+             h2_title.classList.add('info');
+             h2_title.id = 'problema';
+             h2_title.textContent = Titulo;
+ 
+             //<p class="info" id="reportado">Reportado ao Marcos Paulo no grupo Observability - Monitoramento Esxi VMware.</p> 
+             const p_desc = document.createElement('p');
+             p_desc.classList.add('info');
+             p_desc.id = 'reportado';
+             p_desc.textContent = Descricao;
+ 
+             //<h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5>
+             const h5_return = document.createElement('h5');
+             h5_return.classList.add('info');
+             h5_return.id = 'status';
+             h5_return.textContent = Retorno;
+ 
+             div_container.appendChild(img_gota);
+             div_container.appendChild(h2_title);
+             div_container.appendChild(p_desc);
+             div_container.appendChild(h5_return);
+ 
+             main_container.appendChild(div_container);
+          }
+
+          console.log("[UpdateDOM] passo 1.2 entered on fetch /commands | data: ", data);
 
           const html_content = fs.readFileSync('./base_index.html', 'utf8');
 
@@ -93,57 +140,46 @@ async function UpdateDOM() {
 
           div_global.appendChild(div_main_title);
 
-          let i = 0;
+          let i;
+          Object.keys(data).forEach((row) => {
 
-          Object.keys(data["commands"]).forEach((row) => {
+            console.log("row: ", row);
+            //console.log("\ndata[row]: \n", data[row]);
 
-            console.log("passo 3.3, inserindo elementos | titulo | descricao: ");
-            console.log("data[commands][row].titulo: ", data['commands'][row].titulo);
-            console.log("data[commands][row].descricao: ", data['commands'][row].descricao);
+            let Titulo, Descricao, Retorno;
+            Titulo = data[row]["titulo"];
+            Descricao = data[row]["descricao"];
+            Retorno = data[row]["retorno"]
 
-            //<div class="container">
-            const div_container = document.createElement('div');
-            div_container.classList.add('container');
+            console.log("- Titulo: ", Titulo, "\n- Descricao: ", Descricao, "\n- Retorno: ", Retorno);
 
-            //<img class="info" src="./data/img/gotall.png" alt="" style="height: 30px; position: absolute; margin-top: 40px; margin-left: 18px;">
-            const img_gota = document.createElement('img');
-            img_gota.classList.add('info');
-            img_gota.src = './data/img/gota.png';
-            img_gota.style.height = '30px';
-            img_gota.style.position = 'absolute';
-            img_gota.style.marginTop = '40px';
-            img_gota.style.marginLeft = '18px';
+            //para cada ip criar um container de report
+            i = 0;
+            Object.keys(data[row]["ips"]).forEach((actual) =>{
 
-            //<h2 class="info" id="problema">A VMWare (SRVHVM001PDL ip: 10.156.180.11) sem trazer métricas e com acesso muito lento no /ui.</h2>
-            const h2_title = document.createElement('h2');
-            h2_title.classList.add('info');
-            h2_title.id = 'problema';
-            h2_title.textContent = data['commands'][row].titulo;
+              const ip = data[row]["ips"][actual];
+              
+              const ipDetails = database["brk"][row]["List"].find((machine) => machine.IP === ip);
 
-            //<p class="info" id="reportado">Reportado ao Marcos Paulo no grupo Observability - Monitoramento Esxi VMware.</p> 
-            const p_desc = document.createElement('p');
-            p_desc.classList.add('info');
-            p_desc.id = 'reportado';
-            p_desc.textContent = data['commands'][row].descricao;
+              console.log("ipDetails.Hostname: ", ipDetails.Hostname);
 
-            //<h5 class="info" id="status">Status Retorno: Manutenção local da Unidade.</h5>
-            const h5_return = document.createElement('h5');
-            h5_return.classList.add('info');
-            h5_return.id = 'status';
-            h5_return.textContent = 'Status Retorno: Manutenção local da Unidade.';
+              Titulo = Titulo.replace(/\{hostname\}/, ipDetails.Hostname);
+              Titulo = Titulo.replace(/\{region\}/, ipDetails.UNIDADE);
+              Titulo = Titulo.replace(/\{ip\}/, ip);
+              Titulo = Titulo.replace(/\{regshort\}/, ipDetails.UNI);
 
-            div_container.appendChild(img_gota);
-            div_container.appendChild(h2_title);
-            div_container.appendChild(p_desc);
-            div_container.appendChild(h5_return);
+              Descricao = Descricao.replace(/\{hostname\}/, ipDetails.Hostname);
+              Descricao = Descricao.replace(/\{region\}/, ipDetails.UNIDADE);
+              Descricao = Descricao.replace(/\{ip\}/, ip);
+              Descricao = Descricao.replace(/\{reg\}/, ipDetails.UNI);
 
-            main_container.appendChild(div_container);
+              createReportContainer(Titulo, Descricao, Retorno, ip);
 
-            i++;
+              i++;
+            });
           });
           
-          //i contagem de reports
-
+          //i contagem de containers
           (i > 3) ? main_container.style.display = 'grid' : main_container.style.display = 'block';
 
           div_global.appendChild(main_container);

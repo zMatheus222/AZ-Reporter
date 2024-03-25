@@ -55,7 +55,7 @@ function MakeReportObjects(){
 
                         
                         //inserindo argumentos de VMWare ou Unidades nas classes correspondentes
-                        if(itemEmpresa === "UnidadesControle"){
+                        if(itemEmpresa === "unidade"){
                             if(subItem === "Args"){
                                 UnidadeControle.Args = reports[empresa][itemEmpresa][subItem];
                             }
@@ -63,7 +63,7 @@ function MakeReportObjects(){
                                 UnidadeControle.List = reports[empresa][itemEmpresa][subItem];
                             }
                         }
-                        else if (itemEmpresa === "VMWares"){
+                        else if (itemEmpresa === "vmware"){
                             if(subItem === "Args"){
                                 VMWare.Args = reports[empresa][itemEmpresa][subItem];
                             }
@@ -81,7 +81,7 @@ function MakeReportObjects(){
 
                             console.log('details: ', details);
     
-                            if(itemEmpresa === "UnidadesControle" && subItem === "List"){
+                            if(itemEmpresa === "unidade" && subItem === "List"){
                                 
                                 const NewObjUnidade = new UnidadeControle(
                                     details.Hostname,
@@ -91,7 +91,7 @@ function MakeReportObjects(){
     
                                 UnidadesGroup.push(NewObjUnidade);
                             }
-                            if (itemEmpresa === "VMWares" && subItem === "List"){
+                            if (itemEmpresa === "vmware" && subItem === "List"){
     
                                 const NewObjVMWare = new VMWare(
                                     details.Hostname,
@@ -111,8 +111,8 @@ function MakeReportObjects(){
     
                 });
 
-                CompanyGroup["UnidadesControle"] = UnidadesGroup;
-                CompanyGroup["VMWares"] = VMWaresGroup;
+                CompanyGroup["unidade"] = UnidadesGroup;
+                CompanyGroup["vmware"] = VMWaresGroup;
     
                 AllGroups[empresa] = CompanyGroup;
                 
