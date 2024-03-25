@@ -27,9 +27,6 @@ import database from "./data/json/reportsbase.json" assert { type: "json" };
 //const UpdateDOM = require('./data/js/DOM_updater.mjs'); //importando arquivo js 'DOM_updater.js'
 import UpdateDOM from './data/js/DOM_updater.mjs';
 
-//const MakeReportObjects = require('./data/js/ReportMaker'); //importando arquivo js 'ReportMaker.js'
-import MakeReportObjects from './data/js/ReportMaker.mjs';
-
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const app = express();
@@ -41,6 +38,11 @@ app.use(express.static('reports/brk')); //rota que serve os arquivos estaticos n
 const PORT = 8083;
 
 let to_html_commands = 'Esperando comando';
+
+//Titulo = database[Empresa][Sistema]["Args"][Arg]["titulo"];
+//Descricao = database[Empresa][Sistema]["Args"][Arg]["descricao"];
+
+//process.exit(0);
 
 function generateToken(length) {
     const randomBytes = crypto.randomBytes(length);
@@ -240,102 +242,7 @@ function CommandReader(command){
 
     }
 
-    //console.log('dataReturn: ', dataReturn);
-
-    //dataReturn[Empresa] = Sys;
-
-
-    //         let nome_sistema = match.match(/(.+)\[/)[1];
-    //         console.log("passo 1.1.3 nome_sistema: ", nome_sistema);
-
-    //         //salvar match em sistema_args 'msaf[args]'
-    //         let sistema_args = match;
-    //         console.log("passo 1.2: sistema_args:", sistema_args);
-
-    //         //salvar o ip/hostname identificador caso exista no comando vmware'ip/hostname'[args]
-    //         let identifier = sistema_args.match(/(vmware|unidade)([^\s\[]+)/);
-
-    //         //caso exista um identificador, trocamos o ip/hostname para '#identifier#' pois já salvamos 'ip/hostname em' 'let identifier'
-    //         if(identifier) {
-    //             sistema_args = sistema_args.replace(identifier[2], '#identifier#');
-    //             console.log("passo 1.2.1 command identifier[1]: ", identifier[1], " | identifier[2]: ", identifier[2]);
-    //             console.log("passo 1.2.2 sistema_args: ", sistema_args);
-    //         }
-    //         else {
-    //             identifier = null;
-    //             console.log("passo 1.2.else problema nao possui identificador. setando 'null'");
-    //         }
-
-    //         //variavel que salva o sistema, conteudo passado antes dos colchetes 'msaf'[...]
-    //         let system = sistema_args.match(/^([A-Za-z-0-9#]+)\[/)[1];
-    //         console.log("passo 1.2.3 system = sistema_args.match:", system);
-
-    //         //Extraindo o tipo de comando e o argumento de cada correspondência começando por '['
-    //         parts = sistema_args.split("[");
-    //         console.log("passo 1.2.4 parts = sistema_args: ", parts);
-
-    //         //Remove o colchete de fechamento "]" // argumentos tem os conteudos dentro dos colchetes sistema['conteudo1,conteudo2...']
-    //         let argumentos = parts[1].slice(0, -1);
-    //         console.log("passo 1.2.5 let argumentos: ", argumentos);
-
-    //         //separar os argumentos passados nos colchetes com regex ['']
-    //         args = argumentos.match(/([^\]]+)/).input.split(',').map(arg => arg.trim());
-    //         console.log("passo 1.2.6 args: ", args);
-
-    //         args.forEach(function (problema_recebido){
-
-    //             console.log("passo 1.3.0 [forEach] problema_recebido: ", problema_recebido);
-
-    //             //vetor que vai salvar o problema atual 'titulo' - 'descricao problema'
-    //             let titulo_desc;
-
-    //             //buscar o problema recebido no comando na lista de problemas
-    //             if(system + "_" + problema_recebido in database["banco_problemas"]){
-
-    //                 console.log('passo 1.3.1 entrando no if find system_problema in banco_problemas');
-
-    //                 nome_sistema = system;
-    //                 let ip_or_host = null;
-    //                 let titulo = database["banco_problemas"][system + "_" + problema_recebido][0];
-    //                 let descricao = database["banco_problemas"][system + "_" + problema_recebido][1];
-
-    //                 if(identifier != null){
-    //                     ip_or_host = identifier[2];
-    //                     titulo = titulo.replace('#vmware#', identifier[2]);
-    //                     titulo = titulo.replace('#ip#', "192.168.0.4");
-    //                     titulo = titulo.replace('#region#', "IGAOOESTEMAIS");
-    //                     descricao = descricao.replace('#vmware#', identifier[2]);
-    //                     descricao = descricao.replace('#ip#', "192.168.0.4");
-    //                     descricao = descricao.replace('#region#', "IGAOOESTEMAIS");
-    //                 }
-    //                 else {
-    //                     nome_sistema = system;
-    //                 }
-
-    //                 console.log("passo 1.3.2 nome_sistema: ", nome_sistema);
-
-    //                 //commands[system]["titulo_desc"] = titulo_desc; //adicionando titulo e descrição ao objeto
-    //                 titulo_desc = {
-    //                     titulo: titulo,
-    //                     descricao: descricao,
-    //                     arg: problema_recebido,
-    //                     identifier: ip_or_host
-    //                 };
-    //             }
-
-    //             commands.push(titulo_desc);
-    //             console.log("passo 1.4 commands after push: ", commands);
-
-    //         });
-
-    //         //commands[nome_sistema]["args"] = args;
-
-    //     });
-
-    //     console.log("passo 1.5 retornando commands: ", commands);
-
-    //     return {commands: commands};
-    // }
+    console.log('dataReturn: ', dataReturn);
 
     return dataReturn;
 
@@ -427,14 +334,9 @@ app.post('/newcommand', (req, res) =>{
 
 app.use(express.static(path.join(__dirname)));
 
-// Chame MakeReportObjects para obter os grupos de Unidades e VMWares
-//let xx = MakeReportObjects();
-
-//console.log("MakedReportObjects", xx);
+//console.log("MakedReportObjects\n", xx, "\n");
 
 //to_html_commands = CommandReader('/checklist report brk unidade{172.128.5.4,112.122.10.2}[nossh] vmware{10.156.4.1,132.98.10.2}[noui,nologin,retorno:\'Reportado ao Jere no grupo tal\']');
-
-//process.exit(0);
 
 app.listen(PORT, () => {
     console.log(`AZ-Reporter iniciado na porta: ${PORT}`);

@@ -6,16 +6,23 @@ import database from "./../json/reportsbase.json" assert { type: "json" };
 //const fs = require('fs');
 import fs from 'fs';
 
+//const MakeReportObjects = require('./data/js/ReportMaker'); //importando arquivo js 'ReportMaker.js'
+import MakeReportObjects from './../js/ReportMaker.mjs';
+
+// Chame MakeReportObjects para obter os grupos de Unidades e VMWares
+var AllGroups = await MakeReportObjects();
+console.log('\n\nteste 1:\n', AllGroups["brk"]["unidade"], "\n\n");
+
 async function UpdateDOM() {
 
-  console.log("[UpdateDOM] passo 1.0 entered on UpdateDOM function");
+  console.log("[DOMUpdater] passo 1.0 entered on UpdateDOM function");
 
   return new Promise((resolve, reject) => {
 
     // Importando o node-fetch de forma compatível com CommonJS e módulos ES
     import('node-fetch').then(({ default: fetch }) => {
 
-      console.log("[UpdateDOM] passo 1.1 importando 'node-fetch'");
+      console.log("[DOMUpdater] passo 1.1 importando 'node-fetch'");
 
       fetch('http://localhost:8083/commands').then(response => response.json()).then(data => {
 
@@ -94,13 +101,6 @@ async function UpdateDOM() {
           const div2 = document.createElement('div');
           div2.classList.add('green');
 
-          //<img src="./data/img/green.png" alt="" style="height: 45px; margin-left: 10px; margin-top: -15px; ">
-          // const img_linhaII = document.createElement('img');
-          // img_linhaII.src = './data/img/green.png';
-          // img_linhaII.style.height = '45px';
-          // img_linhaII.style.marginLeft = '10px';
-          // img_linhaII.style.marginTop = '-15px';
-
           //<div>
           const div3 = document.createElement('div');
 
@@ -151,17 +151,22 @@ async function UpdateDOM() {
             Descricao = data[row]["descricao"];
             Retorno = data[row]["retorno"]
 
-            console.log("- Titulo: ", Titulo, "\n- Descricao: ", Descricao, "\n- Retorno: ", Retorno);
+            console.log("[DOMUpdater] - Titulo: ", Titulo, "\n- Descricao: ", Descricao, "\n- Retorno: ", Retorno);
 
             //para cada ip criar um container de report
             i = 0;
-            Object.keys(data[row]["ips"]).forEach((actual) =>{
+            Object.keys(data[row]["ips"]).forEach((actual) => {
 
               const ip = data[row]["ips"][actual];
               
               const ipDetails = database["brk"][row]["List"].find((machine) => machine.IP === ip);
 
-              console.log("ipDetails.Hostname: ", ipDetails.Hostname);
+              //console.log('\n\nipDetails: ', ipDetails);
+              //console.log('\nAllGroups\n', AllGroups["brk"][i], "\n");
+
+              console.log('row: ', row);
+
+              //console.log("ipDetails.Hostname: ", ipDetails.Hostname);
 
               Titulo = Titulo.replace(/\{hostname\}/, ipDetails.Hostname);
               Titulo = Titulo.replace(/\{region\}/, ipDetails.UNIDADE);
@@ -207,7 +212,7 @@ async function UpdateDOM() {
           resolve();
 
         }).catch(error => {
-          console.error('Ocorreu um erro:', error);
+          console.error('[DOMUpdater] Ocorreu um erro:', error);
           reject(error);
         });
       });
