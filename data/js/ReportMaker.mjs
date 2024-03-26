@@ -129,7 +129,7 @@ function MakeReportObjects(){
             //console.log("VMW-LIST:", vmware.List);
             //console.log("UND-LIST:", unidade.List);
             //console.log("\n");
-            //console.log("AllGroups: ", AllGroups);
+            console.log("AllGroups: ", AllGroups);
 
             resolve(AllGroups);
 
