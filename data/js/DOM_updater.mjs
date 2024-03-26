@@ -164,7 +164,7 @@ async function UpdateDOM() {
               //console.log('\n\nipDetails: ', ipDetails);
               //console.log('\nAllGroups\n', AllGroups["brk"][i], "\n");
 
-              console.log('row: ', row);
+              //console.log('row: ', row);
 
               //console.log("ipDetails.Hostname: ", ipDetails.Hostname);
 

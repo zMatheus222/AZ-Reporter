@@ -6,7 +6,10 @@
     <title>AZ-Reporter Writer</title>
     <style>
         body{
-            background-color: dimgrey;
+            display: block;
+            text-align: center;
+            margin: 0px 20px 0px 20px;
+            background-color: rgb(35, 35, 35);
         }
         h1{
             color: aliceblue;
@@ -17,14 +20,28 @@
             color: aliceblue;
             display: block;
             text-align: center;
+            margin: 0px 20px 0px 20px;
         }
         .iarea_add_item{
             display: none;
         }
+        label{
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
     </style>
 </head>
 <body>
-    <div class="form">
+
+    <br>
+    <label for="btnMode">O que deseja fazer?</label><br>
+    <select id="btnMode">
+        <option>Adicionar novo sistema</option>
+        <option>Adicionar ou editar comandos e itens</option>
+    </select>
+    <br>
+
+    <div class="form" id="formEdit">
         <h1>AZ-Reporter - Registre um Report</h1><br>
 
         <label for="select_empresa">Selecionar Empresa</label><br>
@@ -71,6 +88,17 @@
 
         <div id="error-message" style="color: red;"></div>
     </div>
+
+    <div class="form" id="formAdd">
+        <h1>AZ-Reporter - Registre um novo sistema</h1><br>
+
+        <label for="systemLabel">Digite o nome do sistema</label><br>
+        <input type="text" id="systemLabel">
+        <button id="system_add_button">+</button><br>
+
+        <!-- <button id="btnEnviar">Enviar</button> -->
+    </div>
+
     <script type="module">
         document.addEventListener('DOMContentLoaded', function() {
 
@@ -314,19 +342,132 @@
                 }
 
                 SelectEmpresa.addEventListener('change', UpdateOptions);
-
                 SelectSubSys.addEventListener('change', UpdateAddPanel);
-
 
                 Object.keys(Reports).forEach((empresa) =>{
                     const option_empresa = document.createElement('option');
                     option_empresa.textContent = empresa;
                     SelectEmpresa.appendChild(option_empresa);
                 });
+
+                //
+                //
+
+                const input_main = document.getElementById('formAdd');
+
+                //<button id="btnEnviar">Enviar</button>
+                const btnEnviar = document.createElement('button');
+                btnEnviar.id = 'btnEnviar';
+                btnEnviar.textContent = 'Enviar';
+                btnEnviar.addEventListener('click', sendDataToJson);
+
+                input_main.appendChild(btnEnviar);
+
+                function rem_system_input(rem_id_list){
+                    rem_id_list.forEach((id) =>{
+                        const element = document.getElementById(id);
+                        input_main.removeChild(element);
+                    });
+                }
+
+                let sys_counter = 0;
+
+                function add_system_input(){
+
+                    //<label for="systemLabel">Digite um atributo</label><br>
+                    const label_systemLabel = document.createElement('label');
+                    label_systemLabel.id = 'atr_label_' + sys_counter;
+                    label_systemLabel.htmlFor = 'systemLabel_' + sys_counter;
+                    label_systemLabel.textContent = 'Digite um atributo';
+                    const label_br = document.createElement('br');
+                    label_br.id = 'label_br_' + sys_counter;
+
+                    //<input type="text" id="systemLabel">
+                    const input_systemLabel = document.createElement('input');
+                    input_systemLabel.type = 'text';
+                    input_systemLabel.id = 'systemLabel_' + sys_counter;
+
+                    const remBtn_br1 = document.createElement('br');
+                    remBtn_br1.id = 'remBtn_br1_' + sys_counter;
+                    const remBtn_br2 = document.createElement('br');
+                    remBtn_br2.id = 'remBtn_br1_br2_' + sys_counter;
+
+                    const remove_button = document.createElement('button');
+                    remove_button.id = 'BtnRemove_' + sys_counter;
+                    remove_button.textContent = '-';
+                    remove_button.addEventListener('click', function (){
+                        rem_system_input([label_systemLabel.id, input_systemLabel.id, remove_button.id, label_br.id, remBtn_br1.id, remBtn_br2.id])
+                    });
+
+                    sys_counter++;
+
+                    input_main.appendChild(label_systemLabel);
+                    input_main.appendChild(label_br);
+                    input_main.appendChild(input_systemLabel);
+                    input_main.appendChild(remove_button);
+                    input_main.appendChild(remBtn_br1);
+                    input_main.appendChild(remBtn_br2);
+                    input_main.appendChild(btnEnviar);
+
+                }
+
+                //
+                //
+
+                const system_add_button = document.getElementById('system_add_button');
+                system_add_button.addEventListener('click', add_system_input);
+
+                function sendDataToJson(){
+                    
+                    const allElements = document.querySelectorAll('#systemLabel');
+                    let sendValues = [];
+
+                    allElements.forEach((item_atual) =>{
+                        sendValues.push(item_atual.value);
+                    });
+
+                    fetch('http://192.168.0.4:8083/addnewsystem', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json', // Indica que os dados estão no formato JSON
+                        },
+                        body: JSON.stringify(sendValues) // Converte os dados para o formato JSON
+                    }).then(response => {
+                        if (!response.ok) throw new Error('Erro ao enviar os dados'); // Lança um erro se a resposta não estiver OK
+                        return response.json(); // Converte a resposta para JSON
+                    }).then(data => {
+                        console.log('Dados recebidos:', data); // Exibe os dados recebidos do servidor
+                    }).catch(error => {
+                        console.error('Erro:', error); // Exibe qualquer erro que ocorra durante o processo
+                    });
+
+                }
+
+                //
+                //
+
+                function ModeChange(){
+                    const formEdit = document.getElementById('formEdit');
+                    const formAdd = document.getElementById('formAdd');
+                    const btnMode = document.getElementById('btnMode');
+
+                    if(btnMode.value === "Adicionar novo sistema") formEdit.style.display = 'none', formAdd.style.display = 'block';
+                    if(btnMode.value === "Adicionar ou editar comandos e itens") formEdit.style.display = 'block', formAdd.style.display = 'none';
+                }
+
+                document.getElementById('btnMode').addEventListener('change', ModeChange);
+                
+                //
+                //
                 
                 UpdateOptions();
                 UpdateAddPanel();
-            });
+
+                //console.log('Iarea é : ',document.querySelectorAll('#iarea_add_item')[0].children)
+                //const filteredChildren = Array.from(document.querySelectorAll('#iarea_add_item')[0].children)
+                //console.log('Filtered é: ',filteredChildren)
+        });
+
         });
     </script>
 </body>

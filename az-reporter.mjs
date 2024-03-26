@@ -19,13 +19,14 @@ import path from 'path';
 //const puppeteer = require('puppeteer'); //lib puppeteer semelhante aos sintéticos para tirar prints
 import puppeteer from 'puppeteer';
 
-//const database_dir = './data/json/database.json';
+const json_db_dir = './data/json/reportsbase.json';
 //let database = require(database_dir);
 
 import database from "./data/json/reportsbase.json" assert { type: "json" };
 
 //const UpdateDOM = require('./data/js/DOM_updater.mjs'); //importando arquivo js 'DOM_updater.js'
 import UpdateDOM from './data/js/DOM_updater.mjs';
+import { setServers } from 'dns';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -251,6 +252,39 @@ function CommandReader(command){
 
 }
 
+function createSystem(systemName, atributes){
+
+    const existingData = fs.readFileSync(json_db_dir);
+    let jsonDatabase = JSON.parse(existingData);
+
+    console.log('\njsonDatabase pre: ', JSON.stringify(jsonDatabase, null, 2));
+
+    jsonDatabase["brk"][systemName] = {
+        "Args": {},
+        "List": []
+    };
+
+    let newItem = {};
+
+    atributes.forEach((key) => {
+        newItem[key] = '';
+    });
+
+    jsonDatabase["brk"][systemName]["List"].push(newItem);
+
+    console.log('mid jsonDatabase:', JSON.stringify(jsonDatabase, null, 2));
+
+    try{
+        console.log('Escrevendo novo sistema ' + systemName + " no arquivo .json");
+        fs.writeFileSync(json_db_dir, JSON.stringify(jsonDatabase, null, 2));
+        console.log('Escrito novo sistema ', systemName, 'to the JSON file');
+    }
+    catch (error){
+        console.error('Erro ao escrever o arquivo JSON:', error);
+    }
+
+}
+
 app.get('/commands', (req, res) => {
     res.send(to_html_commands);
 });
@@ -440,6 +474,23 @@ app.post('/newcommand', (req, res) =>{
         console.log("Error: ", error);
         res.send(500);
     }
+});
+
+app.post('/addnewsystem', (req, res)=>{
+
+    //função que vai receber os dados para adição de novo sistema
+
+    let SystemName;
+    let atributes = [];
+
+    req.body.forEach((atual, index)=>{
+        (index === 0) ? SystemName = atual : atributes.push(atual);
+    });
+
+    console.log('SystemName: ', SystemName, 'atributes:', atributes);
+
+    createSystem(SystemName, atributes);
+
 });
 
 app.use(express.static(path.join(__dirname)));
