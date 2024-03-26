@@ -1,74 +1,182 @@
 {
-    "brk": {
-        "unidade": {
-            "Args": {
-                "nossh": {
-                    "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso SSH."
-                },
-                "noagent": {
-                    "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está com acesso SSH porém sem trazer métricas."
-                }
-            },
-            "List": [
-                {
-                    "Hostname": "SRVPTH001APG",
-                    "IP": "10.156.84.94",
-                    "UNIDADE": "APARECIDA DE GOIANIA",
-                    "UNI": "APG"
-                },
-                {
-                    "Hostname": "SRVPTH001BLU",
-                    "IP": "10.156.18.21",
-                    "UNIDADE": "BLUMENAU",
-                    "UNI": "BLU"
-                }
-            ]
+  "brk": {
+    "unidade": {
+      "Args": {
+        "nossh": {
+          "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso SSH."
         },
-        "vmware": {
-            "Args": {
-                "noui": {
-                    "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso no /ui."
-                },
-                "nologin": {
-                    "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está com erro de login no /ui"
-                }
-            },
-            "List": [
-                {
-                    "Hostname": "SRVHVM01RVD",
-                    "Servidor": 76,
-                    "Port": 9200,
-                    "ContainerName": "vmware_exporter_rvd01",
-                    "UNIDADE": "RIO VERDE",
-                    "UNI": "RVD",
-                    "IP": "10.156.86.10"
-                },
-                {
-                    "Hostname": "srvhvm02rvd",
-                    "Servidor": 76,
-                    "Port": 9201,
-                    "ContainerName": "vmware_exporter_rvd02",
-                    "UNIDADE": "RIO VERDE",
-                    "UNI": "RVD",
-                    "IP": "10.156.86.20"
-                }
-            ]
+        "noagent": {
+          "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está com acesso SSH porém sem trazer métricas."
         }
+      },
+      "List": [
+        {
+          "Hostname": "SRVPTH001APG",
+          "IP": "10.156.84.94",
+          "UNIDADE": "APARECIDA DE GOIANIA",
+          "UNI": "APG"
+        },
+        {
+          "Hostname": "SRVPTH001BLU",
+          "IP": "10.156.18.21",
+          "UNIDADE": "BLUMENAU",
+          "UNI": "BLU"
+        }
+      ]
     },
-    "Odonto": {
-        "UnidadesControle": {
+    "vmware": {
+      "Args": {
+        "noui": {
+          "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso no /ui."
         },
-        "VMWares": {
+        "nologin": {
+          "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está com erro de login no /ui"
         }
-    },
-    "Marfrig":{
-        "UnidadesControle": {
+      },
+      "List": [
+        {
+          "Hostname": "SRVHVM01RVD",
+          "Servidor": 76,
+          "Port": 9200,
+          "ContainerName": "vmware_exporter_rvd01",
+          "UNIDADE": "RIO VERDE",
+          "UNI": "RVD",
+          "IP": "10.156.86.10"
         },
-        "VMWares": {
+        {
+          "Hostname": "srvhvm02rvd",
+          "Servidor": 76,
+          "Port": 9201,
+          "ContainerName": "vmware_exporter_rvd02",
+          "UNIDADE": "RIO VERDE",
+          "UNI": "RVD",
+          "IP": "10.156.86.20"
         }
+      ]
     }
+  },
+  "Odonto": {
+    "unidade": {
+      "Args": {
+        "nossh": {
+          "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso SSH."
+        },
+        "noagent": {
+          "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está com acesso SSH porém sem trazer métricas."
+        }
+      },
+      "List": [
+        {
+          "Hostname": "SRVPTH001APG",
+          "IP": "10.156.84.94",
+          "UNIDADE": "APARECIDA DE GOIANIA",
+          "UNI": "APG"
+        },
+        {
+          "Hostname": "SRVPTH001BLU",
+          "IP": "10.156.18.21",
+          "UNIDADE": "BLUMENAU",
+          "UNI": "BLU"
+        }
+      ]
+    },
+    "vmware": {
+      "Args": {
+        "noui": {
+          "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso no /ui."
+        },
+        "nologin": {
+          "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está com erro de login no /ui"
+        }
+      },
+      "List": [
+        {
+          "Hostname": "SRVHVM01RVD",
+          "Servidor": 76,
+          "Port": 9200,
+          "ContainerName": "vmware_exporter_rvd01",
+          "UNIDADE": "RIO VERDE",
+          "UNI": "RVD",
+          "IP": "10.156.86.10"
+        },
+        {
+          "Hostname": "srvhvm02rvd",
+          "Servidor": 76,
+          "Port": 9201,
+          "ContainerName": "vmware_exporter_rvd02",
+          "UNIDADE": "RIO VERDE",
+          "UNI": "RVD",
+          "IP": "10.156.86.20"
+        }
+      ]
+    }
+  },
+  "Marfrig": {
+    "unidade": {
+      "Args": {
+        "nossh": {
+          "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso SSH."
+        },
+        "noagent": {
+          "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está com acesso SSH porém sem trazer métricas."
+        }
+      },
+      "List": [
+        {
+          "Hostname": "SRVPTH001APG",
+          "IP": "10.156.84.94",
+          "UNIDADE": "APARECIDA DE GOIANIA",
+          "UNI": "APG"
+        },
+        {
+          "Hostname": "SRVPTH001BLU",
+          "IP": "10.156.18.21",
+          "UNIDADE": "BLUMENAU",
+          "UNI": "BLU"
+        }
+      ]
+    },
+    "vmware": {
+      "Args": {
+        "noui": {
+          "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso no /ui."
+        },
+        "nologin": {
+          "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
+          "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está com erro de login no /ui"
+        }
+      },
+      "List": [
+        {
+          "Hostname": "SRVHVM01RVD",
+          "Servidor": 76,
+          "Port": 9200,
+          "ContainerName": "vmware_exporter_rvd01",
+          "UNIDADE": "RIO VERDE",
+          "UNI": "RVD",
+          "IP": "10.156.86.10"
+        },
+        {
+          "Hostname": "srvhvm02rvd",
+          "Servidor": 76,
+          "Port": 9201,
+          "ContainerName": "vmware_exporter_rvd02",
+          "UNIDADE": "RIO VERDE",
+          "UNI": "RVD",
+          "IP": "10.156.86.20"
+        }
+      ]
+    }
+  }
 }

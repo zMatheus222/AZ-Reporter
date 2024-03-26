@@ -265,7 +265,6 @@ app.post('/requestjson', (req, res) => {
             console.error('Erro ao ler o arquivo:', err);
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
-        //console.log('Conteúdo do arquivo:', data);
         
         let existingJson = {};
         try {
@@ -275,40 +274,76 @@ app.post('/requestjson', (req, res) => {
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
 
-        //console.log('existingJson:', existingJson);
-
         const empresa = req.body.Args.select_empresa;
         const sistema = req.body.Args.select_sistema;
         const subsistema = req.body.Args['select_subsys'];
-        console.log('empresa é: ', empresa, 'sistema é: ', sistema,'substistema é: ', subsistema,);
+
+        console.log('empresa é: ', empresa,',', 'sistema é: ',',', sistema,'substistema é: ',',', subsistema);
 
         if (existingJson.hasOwnProperty(empresa) && existingJson[empresa].hasOwnProperty(sistema)) {
             const subsystemData = existingJson[empresa][sistema];
 
-            // verificação se o subsistema é Args ou List
+            // Verifica se o subsistema é Args ou List
             if (subsystemData.hasOwnProperty(subsistema)) {
-                const argsData = req.body.Args;
-                for (const argKey in argsData) {
-                    if (argKey.startsWith('input_')) {
-                        const argName = argsData['input_iarea_arg'];
-                        const titleKey = argsData['input_iarea_title'];
-                        const descriptionKey = argsData['input_iarea_description'];
-                        console.log('argname é: ', argName, 'titleKey é: ', titleKey,'descriptionKey é: ', descriptionKey,);
+                if (subsistema === 'Args') {
+                    const argsData = req.body.Args;
+                    for (const argKey in argsData) {
+                        if (argKey.startsWith('input_')) {
+                            const argName = argsData['input_iarea_arg'];
+                            const titleKey = argsData['input_iarea_title'];
+                            const descriptionKey = argsData['input_iarea_description'];
 
-                        if (argsData.hasOwnProperty('input_iarea_title') && argsData.hasOwnProperty('input_iarea_description')) {
-                            const newData = {
-                                [argName]: {
-                                    "titulo": titleKey,
-                                    "descricao": descriptionKey
-                                }
-                            };
-                            console.log('newdata é: ',newData)
-                            Object.assign(subsystemData[subsistema], newData);
-                        } else {
-                            console.error(`Campos título e descrição não encontrados para ${argKey}`);
+                            console.log('argname é: ', argName, 'titleKey é: ', titleKey,'descriptionKey é: ', descriptionKey);
+
+                            if (titleKey && descriptionKey) {
+                                const newData = {
+                                    [argName]: {
+                                        "titulo": titleKey,
+                                        "descricao": descriptionKey
+                                    }
+                                };
+                                console.log('newdata é: ',newData);
+                                Object.assign(subsystemData[subsistema], newData);
+                            } else {
+                                console.error(`Campos título e descrição não encontrados para ${argKey}`);
+                            }
                         }
                     }
+                } else if (subsistema === 'List') {
+                    const listData = req.body.Args.List;
+                
+                    if (listData && typeof listData === 'object') {
+                        const formattedListData = {};
+                
+                        let keyPattern = [];
+                        if (sistema === 'unidade') {
+                            keyPattern = ['Hostname', 'IP', 'UNIDADE', 'UNI'];
+                        } else if (sistema === 'vmware') {
+                            keyPattern = ['Hostname', 'Servidor', 'Port', 'ContainerName', 'UNIDADE', 'UNI', 'IP'];
+                        }
+                
+                        keyPattern.forEach((key, index) => {
+                            if (listData[`label_${key}`]) {
+                                if (key === 'Servidor' || key === 'Port') {
+                                    formattedListData[key] = parseInt(listData[`label_${key}`]);
+                                } else {
+                                    formattedListData[key] = listData[`label_${key}`];
+                                }
+                            }
+                        });
+                
+                        if (!subsystemData[subsistema]) {
+                            subsystemData[subsistema] = [];
+                        }
+            
+                        subsystemData[subsistema].push(formattedListData);
+                    } else {
+                        console.error('Dados de lista inválidos:', listData);
+                        res.status(400).json({ error: 'Dados de lista inválidos' });
+                        return;
+                    }
                 }
+
                 fs.writeFile(caminhoArquivo, JSON.stringify(existingJson, null, 2), 'utf8', writeErr => {
                     if (writeErr) {
                         console.error('Erro ao escrever no arquivo JSON:', writeErr);

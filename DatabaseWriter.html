@@ -68,61 +68,10 @@
         </div>
 
         <button id="btnEnviar">Enviar</button>
+
+        <div id="error-message" style="color: red;"></div>
     </div>
     <script type="module">
-        /*
-        //importando a função 'MakeReportObjects' e as 2 classes 'UnidadeControle' e 'VMWare'
-        import MakeReportObjects, { UnidadeControle, VMWare } from './data/js/ReportMaker.mjs';
-
-        function addElm(type){ return document.createElement(type); }
-        function getElm(id){ return document.getElementById(id); }
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-            //<select id="select_empresa">
-            const select_empresa = getElm('select_empresa');
-            const select_sistema = getElm('select_sistema');
-            const select_subsys = getElm('select_subsys');
-
-            MakeReportObjects().then(AllGroups => {
-
-                console.log("AllGroups: ", AllGroups);
-                console.log("VMWare.Args: ", VMWare.Args);
-                console.log("UnidadeControle.Args: ", UnidadeControle.Args);
-
-                Object.keys(AllGroups).forEach((empresa) =>{ console.log("emp:", empresa);
-
-                    //adicionando opção das empresas
-                    const option_empresa = addElm('option');
-                    option_empresa.textContent = empresa;
-                    select_empresa.appendChild(option_empresa);
-                    
-                    Object.keys(AllGroups[empresa]).forEach((sys) =>{ console.log("\t sys: ", sys);
-
-                        const option_sistema = addElm('option');
-                        option_sistema.textContent = sys;
-                        select_sistema.appendChild(option_sistema);
-                        
-                        Object.keys(AllGroups[empresa][sys]).forEach((maquinaAtual) =>{ console.log("\t\t maquinaAtual: ", maquinaAtual);
-
-                            Object.keys(AllGroups[empresa][sys][maquinaAtual]).forEach((subitem) =>{ console.log("\t\t\t subitem: ", subitem);
-
-
-                            });
-
-                        });
-
-
-                    });
-
-                });
-
-
-            });
-
-        });
-        */
-
         document.addEventListener('DOMContentLoaded', function() {
 
             fetch('./data/json/reportsbase.json').then((response) => response.json()).then((Reports) => {
@@ -131,7 +80,7 @@
                 let SelectItensEmpresa = document.getElementById('select_sistema');
                 let SelectChangeGroups = document.getElementById('select_subsys');
                 let SelectSubSys = document.getElementById('select_subsys');
-                
+
                 const addNewItem = document.getElementById('addnewitem');
                 addNewItem.addEventListener('click', function(){
                     (iarea_add_item.style.display !== "none") ? iarea_add_item.style.display = 'none' : iarea_add_item.style.display = 'block' ;
@@ -164,51 +113,91 @@
                     });
                 }
 
-                    
+                const btnEnviar = document.getElementById('btnEnviar');
+                btnEnviar.addEventListener('click', function() {
+                    event.preventDefault();
+                    if (!validarCampos()) {
+                        const errorMessage = document.getElementById('error-message');
+                        errorMessage.textContent = 'Por favor, preencha todos os campos.';
+                        errorMessage.style.color = 'red';
+                    } else {
+                        const errorMessage = document.getElementById('error-message');
+                        errorMessage.textContent = ''; // Limpar mensagem de erro, se houver
+                        // Enviar dados se todos os campos estiverem preenchidos
+                        const formData = capturarDadosFormulario();
+                        sendFormData(formData);
+                    }
+                });
+
+                function validarCampos() {
+                    // Verificar se todos os campos obrigatórios estão preenchidos
+                    const empresa = SelectEmpresa.value;
+                    const sistema = SelectItensEmpresa.value;
+                    const subsistema = SelectSubSys.value;
+
+                    if (!empresa || !sistema || !subsistema) {
+                        return false; // Retornar false se algum campo estiver vazio
+                    }
+
+                    // Verificar campos dinâmicos, se necessário
+                    const dynamicFields = document.querySelectorAll('.iarea_add_item input');
+                    for (let field of dynamicFields) {
+                        if (!field.value) {
+                            return false; // Retornar false se algum campo dinâmico estiver vazio
+                        }
+                    }
+
+                    return true; // Retornar true se todos os campos estiverem preenchidos
+                }
+
+                function capturarDadosFormulario() {
+                    // Capturar dados do formulário
+                    const formData = {
+                        Args: {
+                            select_empresa: SelectEmpresa.value,
+                            select_sistema: SelectItensEmpresa.value,
+                            select_subsys: SelectSubSys.value
+                        }
+                    };
+
+                    const dynamicFields = document.querySelectorAll('.iarea_add_item input');
+                    dynamicFields.forEach(field => {
+                        formData.Args[field.id] = field.value;
+                    });
+
+                    return formData;
+                }
+
                 function UpdateAddPanel(){
 
-                    //<div class="iarea_add_item" id="iarea_add_item">
                     iarea_add_item = document.getElementById('iarea_add_item');
-                    
-                    //<button id="btnEnviar">Enviar</button>
                     const btnEnviar = document.getElementById('btnEnviar');
-                    
-                    //variavel que guarda os dados a serem enviados
+
                     let dataToSend = {};
-
-                    //variavel para guardar os itens dinâmicos de "List"
                     let ListElements = [];
-
-                    console.log("SelectItensEmpresa.value: ", SelectItensEmpresa.value);
-                    console.log("SelectSubSys.value: ", SelectSubSys.value);
 
                     if(SelectSubSys.value === "Args"){
                         
                         iarea_add_item.innerHTML = '';
 
-                        // <label for="iarea_arg">Argumento:</label><br>
                         const label_iarea_arg = document.createElement('label');
                         label_iarea_arg.htmlFor = 'iarea_arg';
                         label_iarea_arg.textContent = 'Argumento:';
 
-                        // <input type="textarea" id="iarea_arg"  placeholder="exemplo: 'nologin'"/><br><br>
                         const input_iarea_arg = document.createElement('input');
                         input_iarea_arg.type = 'textarea';
                         input_iarea_arg.id = 'iarea_arg:';
                         input_iarea_arg.placeholder = 'exemplo: \'nologin\'';
-                
-                        // <label for="iarea_title">Titulo:</label><br>
+
                         const label_iarea_title = document.createElement('label');
                         label_iarea_title.htmlFor = 'iarea_title';
                         label_iarea_title.textContent = 'Titulo:';
 
-                        // <input type="textarea" id="iarea_title" placeholder="Máquina 1 sem acesso..."/><br><br>
                         const input_iarea_title = document.createElement('input');
                         input_iarea_title.type = 'textarea';
                         input_iarea_title.id = 'iarea_arg:';
                         input_iarea_title.placeholder = 'Máquina 1 sem acesso...';
-                
-                        // <label for="iarea_description">Descrição:</label><br>
+
                         const label_iarea_description = document.createElement('label');
                         label_iarea_description.htmlFor = 'iarea_description';
                         label_iarea_description.textContent = 'Descrição:';
@@ -248,8 +237,7 @@
                         });
                         
                     }
-                    else if(SelectSubSys.value === "List"){
-
+                    if (SelectSubSys.value === "List") {
                         iarea_add_item.innerHTML = '';
 
                         const PropUnidades = Object.keys(Reports[SelectEmpresa.value][SelectItensEmpresa.value]["List"][0]);
@@ -257,31 +245,46 @@
 
                         console.log("Numero de propriedades nas Unidades: ", UnidadePropCount);
                         
-                        for(let i = 0; i < UnidadePropCount; i++){
-
+                        for (let i = 0; i < UnidadePropCount; i++) {
                             const element_label = document.createElement('label');
                             element_label.htmlFor = `label_${PropUnidades[i]}`;
-                            element_label.textContent = `Digite - ${PropUnidades[i]}:`;
+                            element_label.textContent = `Digite - ${PropUnidades[i]}`;
 
                             const element_input = document.createElement('input');
                             element_input.type = 'textarea';
                             element_input.id = `label_${PropUnidades[i]}`;
 
-                            iarea_add_item.appendChild(element_label); Br(iarea_add_item);
-                            iarea_add_item.appendChild(element_input); Br(iarea_add_item); Br(iarea_add_item);
+                            iarea_add_item.appendChild(element_label); 
+                            Br(iarea_add_item);
+                            iarea_add_item.appendChild(element_input); 
+                            Br(iarea_add_item); 
+                            Br(iarea_add_item);
 
                             ListElements.push({[`label_${PropUnidades[i]}`]: element_input});
-
                         }
 
                         btnEnviar.addEventListener('click', function() {
+                            let listItemData = {};
 
-                            ListElements.forEach((item)=>{
-                                console.log("item: ", item);
-                            })
-                            
+                            ListElements.forEach((item) => {
+                                const inputId = Object.keys(item)[0];
+
+                                const inputValue = item[inputId].value;
+                                listItemData[inputId] = inputValue;
+                            });
+
+                            const dataToSend = {
+                                Args: {
+                                    select_empresa: SelectEmpresa.value,
+                                    select_sistema: SelectItensEmpresa.value,
+                                    select_subsys: SelectSubSys.value,
+                                    List: listItemData
+                                }
+                            };
+
+                            console.log("Dados a serem enviados:", dataToSend);
+
                             sendFormData(dataToSend);
-                        
                         });
                     }
                 }
@@ -299,13 +302,8 @@
 
                 function UpdateOptions() {
 
-                    //<select id="input_sys_type" name="input_sys_type">
                     SelectEmpresa = document.getElementById('select_empresa');
-
-                    //<select id="input_itens_empresa" name="input_itens_empresa">
                     SelectItensEmpresa = document.getElementById('select_sistema');
-
-                    //<select id="input_change_groups" name="input_change_groups">
                     SelectChangeGroups = document.getElementById('select_subsys');
 
                     appendSelect(Reports[SelectEmpresa.value], SelectItensEmpresa);
@@ -320,7 +318,7 @@
                 SelectSubSys.addEventListener('change', UpdateAddPanel);
 
 
-                Object.keys(Reports).forEach((empresa) =>{ //console.log("empresa....: ", empresa); // equivale a: brk: {
+                Object.keys(Reports).forEach((empresa) =>{
                     const option_empresa = document.createElement('option');
                     option_empresa.textContent = empresa;
                     SelectEmpresa.appendChild(option_empresa);
@@ -328,12 +326,7 @@
                 
                 UpdateOptions();
                 UpdateAddPanel();
-
-                //console.log('Iarea é : ',document.querySelectorAll('#iarea_add_item')[0].children)
-                //const filteredChildren = Array.from(document.querySelectorAll('#iarea_add_item')[0].children)
-                //console.log('Filtered é: ',filteredChildren)
-        });
-
+            });
         });
     </script>
 </body>

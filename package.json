@@ -7,15 +7,15 @@
     "main": "az-reporter.mjs",
     "type": "module",
     "keywords": [
-      "nodejs",
-      "bootstrap",
-      "express"
+        "nodejs",
+        "bootstrap",
+        "express"
     ],
     "dependencies": {
-      "express": "4.18.3",
-      "cors": "2.8.5",
-      "jsdom": "24.0.0",
-      "body-parser": "1.20.2",
-      "puppeteer": "22.4.1"
+        "body-parser": "1.20.2",
+        "cors": "2.8.5",
+        "express": "^4.18.3",
+        "jsdom": "24.0.0",
+        "puppeteer": "22.4.1"
     }
-  }
+}
