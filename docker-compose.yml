@@ -10,7 +10,7 @@ services:
       - ./package.json:/home/node/app/package.json
       - ./data/js/DOM_updater.mjs:/home/node/app/data/js/DOM_updater.mjs
       - ./data/js/ReportMaker.mjs:/home/node/app/data/js/ReportMaker.mjs
-      - ./data/json/database.json:/home/node/app/data/json/database.json
+      - ./data/json/reportsbase.json:/home/node/app/data/json/reportsbase.json
       - ./base_index.html:/home/node/app/base_index.html
       - ./index.html:/home/node/app/index.html
       - ./data/img:/home/node/app/data/img

@@ -1,38 +1,40 @@
 {
     "brk": {
-        "UnidadesControle": {
+        "unidade": {
             "Args": {
                 "nossh": {
                     "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A Unidade {hostname} de {region} ({regshort}) IP: {ip} está sem trazer métricas e sem acesso SSH."
+                    "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso SSH."
                 },
                 "noagent": {
                     "titulo": "Unidade {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A Unidade {hostname} de {region} ({regshort}) IP: {ip} está com acesso SSH porém sem trazer métricas."
+                    "descricao": "A Unidade {hostname} de {region} ({reg}) IP: {ip} está com acesso SSH porém sem trazer métricas."
                 }
             },
             "List": [
                 {
                     "Hostname": "SRVPTH001APG",
                     "IP": "10.156.84.94",
-                    "UNIDADE": "APARECIDA DE GOIANIA"
+                    "UNIDADE": "APARECIDA DE GOIANIA",
+                    "UNI": "APG"
                 },
                 {
                     "Hostname": "SRVPTH001BLU",
                     "IP": "10.156.18.21",
-                    "UNIDADE": "BLUMENAU"
+                    "UNIDADE": "BLUMENAU",
+                    "UNI": "BLU"
                 }
             ]
         },
-        "VMWares": {
+        "vmware": {
             "Args": {
                 "noui": {
                     "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A VMWare {hostname} de {region} ({regshort}) IP: {ip} está sem trazer métricas e sem acesso no /ui."
+                    "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está sem trazer métricas e sem acesso no /ui."
                 },
                 "nologin": {
                     "titulo": "VMWare {hostname} de {region} apresentando STOPPED.",
-                    "descricao": "A VMWare {hostname} de {region} ({regshort}) IP: {ip} está com erro de login no /ui"
+                    "descricao": "A VMWare {hostname} de {region} ({reg}) IP: {ip} está com erro de login no /ui"
                 }
             },
             "List": [
@@ -41,7 +43,8 @@
                     "Servidor": 76,
                     "Port": 9200,
                     "ContainerName": "vmware_exporter_rvd01",
-                    "Unidade": "RVD",
+                    "UNIDADE": "RIO VERDE",
+                    "UNI": "RVD",
                     "IP": "10.156.86.10"
                 },
                 {
@@ -49,7 +52,8 @@
                     "Servidor": 76,
                     "Port": 9201,
                     "ContainerName": "vmware_exporter_rvd02",
-                    "Unidade": "RVD",
+                    "UNIDADE": "RIO VERDE",
+                    "UNI": "RVD",
                     "IP": "10.156.86.20"
                 }
             ]

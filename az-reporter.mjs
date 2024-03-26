@@ -22,13 +22,10 @@ import puppeteer from 'puppeteer';
 //const database_dir = './data/json/database.json';
 //let database = require(database_dir);
 
-import database_dir from "./data/json/database.json" assert { type: "json" };
+import database from "./data/json/reportsbase.json" assert { type: "json" };
 
 //const UpdateDOM = require('./data/js/DOM_updater.mjs'); //importando arquivo js 'DOM_updater.js'
 import UpdateDOM from './data/js/DOM_updater.mjs';
-
-//const MakeReportObjects = require('./data/js/ReportMaker'); //importando arquivo js 'ReportMaker.js'
-import MakeReportObjects from './data/js/ReportMaker.mjs';
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
@@ -42,6 +39,11 @@ app.use(express.json());
 const PORT = 8083;
 
 let to_html_commands = 'Esperando comando';
+
+//Titulo = database[Empresa][Sistema]["Args"][Arg]["titulo"];
+//Descricao = database[Empresa][Sistema]["Args"][Arg]["descricao"];
+
+//process.exit(0);
 
 function generateToken(length) {
     const randomBytes = crypto.randomBytes(length);
@@ -147,119 +149,105 @@ function insertNewCommand(data){
 
 function CommandReader(command){
 
-    //command = "/checklist report cartoes[nocollected] msaf[httpversion] ordens[timepass]";
-    //command = "/checklist report vmwareSRVHVM004RMR[noui]";
+    console.log("[CommandReader] passo 1.0 comando recebido: ", command);
 
-    console.log("passo 1.0 comando recebido: ", command);
+    //command = "/checklist report brk unidade{172.128.5.4,112.122.10.2}[nossh] vmware{10.156.4.1,132.98.10.2}[noui,nologin,retorno:'Reportado ao Jere no grupo tal']";
 
-    //separar os itens dos comandos com regex
-    let command_matches = command.match(/([^\s\[]+)\[([^\]]+)\]/g);
-    console.log("passo 1.0.1 command_matches: ", command_matches);
+    let dataReturn = {}, matchesGeral;
 
-    //verificar se existe ocorrencia da regex no comando e não 'null'
-    if(command_matches){
+    const rgx_separate_commands = /(?:report\s)?(\w+)\s((?:[\w\{\}\.\,]+\[[\w,"':\s]+\]\s?)+)/g;
+    
+    //iterar sobre o comando "empresa" "comando1" "comando2"...
+    while ((matchesGeral = rgx_separate_commands.exec(command)) !== null) {
 
-        console.log("passo 1.1 command_matches", command_matches);
-        
-        let parts, args, commands = {};
+        console.log("[CommandReader] passo 1.1 while ((matchesGeral: ", matchesGeral);
 
-        //objeto que será lido e transformado na parte visual. em 'identifier' caso ele não for null associe o valor nele.
-        commands = [];
+        let Empresa = matchesGeral[1];
+        console.log("[CommandReader] passo 1.2 Empresa recebida no comando: ", Empresa);
 
-        //iterar sobre cada ocorrencia no comando
-        command_matches.forEach(function(match){
+        let commands = matchesGeral[2].match(/[\w\{\}\.\,]+\[[^\]]+\]/g); // dividir os comandos
 
-            console.log("passo 1.1.2 function(match): ", match);
+        console.log("[CommandReader] passo 1.3 let commands", commands);
 
-            let nome_sistema = match.match(/(.+)\[/)[1];
-            console.log("passo 1.1.3 nome_sistema: ", nome_sistema);
+        //iterar sobre cada item que foi separado na regex "brk" "comando1" "comando2"...
+        commands.forEach((separated_command) => {
 
-            //salvar match em sistema_args 'msaf[args]'
-            let sistema_args = match;
-            console.log("passo 1.2: sistema_args:", sistema_args);
+            console.log("[CommandReader] passo 1.4 Comando separado: ", separated_command);
 
-            //salvar o ip/hostname identificador caso exista no comando vmware'ip/hostname'[args]
-            let identifier = sistema_args.match(/(vmware|unidade)([^\s\[]+)/);
+            const rgx_pick_ip = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g;
+            const command_ips = separated_command.match(rgx_pick_ip);
+            console.log("[CommandReader] passo 1.5 command_ips: ", command_ips);
 
-            //caso exista um identificador, trocamos o ip/hostname para '#identifier#' pois já salvamos 'ip/hostname em' 'let identifier'
-            if(identifier) {
-                sistema_args = sistema_args.replace(identifier[2], '#identifier#');
-                console.log("passo 1.2.1 command identifier[1]: ", identifier[1], " | identifier[2]: ", identifier[2]);
-                console.log("passo 1.2.2 sistema_args: ", sistema_args);
-            }
-            else {
-                identifier = null;
-                console.log("passo 1.2.else problema nao possui identificador. setando 'null'");
-            }
+            const rgx_separate_args = /(\w+)?\[((?:[\w+'"\s:]\,?)+)\]/g;
 
-            //variavel que salva o sistema, conteudo passado antes dos colchetes 'msaf'[...]
-            let system = sistema_args.match(/^([A-Za-z-0-9#]+)\[/)[1];
-            console.log("passo 1.2.3 system = sistema_args.match:", system);
+            //apos já ter pegado ips do comando remover eles
+            if(command_ips) separated_command = separated_command.replace(/\{[^}]+\}/,''), console.log("[CommandReader] passo 1.0.6 pos-replace-separated_command: ", separated_command);
 
-            //Extraindo o tipo de comando e o argumento de cada correspondência começando por '['
-            parts = sistema_args.split("[");
-            console.log("passo 1.2.4 parts = sistema_args: ", parts);
+            //iterar sobre 'sistema' 'arg'
+            let commandsGeral, Sistema, Argumentos;
 
-            //Remove o colchete de fechamento "]" // argumentos tem os conteudos dentro dos colchetes sistema['conteudo1,conteudo2...']
-            let argumentos = parts[1].slice(0, -1);
-            console.log("passo 1.2.5 let argumentos: ", argumentos);
+            //salvar Sistema e Argumentos nas variáveis
+            if ((commandsGeral = rgx_separate_args.exec(separated_command)) !== null) {
 
-            //separar os argumentos passados nos colchetes com regex ['']
-            args = argumentos.match(/([^\]]+)/).input.split(',').map(arg => arg.trim());
-            console.log("passo 1.2.6 args: ", args);
+                console.log("[CommandReader] passo 1.7 if ((commandsGeral: ", commandsGeral);
+                
+                commandsGeral.forEach((args, i) => {
+                    if(i == 1) Sistema = args;
+                    if(i == 2) Argumentos = args;
+                }); console.log("[CommandReader] passo 1.8 Sistema: " + Sistema + " | Argumentos: " + Argumentos);
 
-            args.forEach(function (problema_recebido){
+                let commandData = {
+                    "titulo": '',
+                    "descricao": '',
+                    "retorno": '',
+                    "ips": command_ips
+                };
 
-                console.log("passo 1.3.0 [forEach] problema_recebido: ", problema_recebido);
+                const rgx_sep_args = /((?:[\w'":\s])+)\,?/g;
+                let separatedArgs;
+                while(separatedArgs = rgx_sep_args.exec(Argumentos)){
 
-                //vetor que vai salvar o problema atual 'titulo' - 'descricao problema'
-                let titulo_desc;
+                    console.log("[CommandReader] passo 1.9 while(separatedArgs: ", separatedArgs);
 
-                //buscar o problema recebido no comando na lista de problemas
-                if(system + "_" + problema_recebido in database["banco_problemas"]){
+                    const Arg = separatedArgs[1];
+                    console.log("[CommandReader] passo 1.10 Arg: ", Arg);
 
-                    nome_sistema = system;
-                    let ip_or_host = null;
-                    let titulo = database["banco_problemas"][system + "_" + problema_recebido][0];
-                    let descricao = database["banco_problemas"][system + "_" + problema_recebido][1];
+                    const rgx_retorno = /(?:retorno|ret):\W(.+)\W/g;
 
-                    if(identifier != null){
-                        ip_or_host = identifier[2];
-                        titulo = titulo.replace('#vmware#', identifier[2]);
-                        titulo = titulo.replace('#ip#', "192.168.0.4");
-                        titulo = titulo.replace('#region#', "IGAOOESTEMAIS");
-                        descricao = descricao.replace('#vmware#', identifier[2]);
-                        descricao = descricao.replace('#ip#', "192.168.0.4");
-                        descricao = descricao.replace('#region#', "IGAOOESTEMAIS");
+                    let Titulo, Descricao, Retorno;
+                    
+                    if(Retorno = rgx_retorno.exec(Arg)){
+                        console.log("[CommandReader] passo 1.11 retorno encontrado: ", Retorno[1]);
+                        commandData["retorno"] = Retorno[1];
                     }
                     else {
-                        nome_sistema = system;
+
+                        Titulo = database[Empresa][Sistema]["Args"][Arg]["titulo"];
+                        Descricao = database[Empresa][Sistema]["Args"][Arg]["descricao"];
+
+                        console.log("[CommandReader] passo 1.12 Titulo: " + Titulo + " | Descricao: " + Descricao);
+
+                        commandData["titulo"] = Titulo;
+                        commandData["descricao"] = Descricao;
                     }
 
-                    console.log("passo 1.3.1 nome_sistema: ", nome_sistema);
+                    console.log("[CommandReader] passo 1.13 commandData sendo adicionado: ", commandData);
 
-                    //commands[system]["titulo_desc"] = titulo_desc; //adicionando titulo e descrição ao objeto
-                    titulo_desc = {
-                        titulo: titulo,
-                        descricao: descricao,
-                        arg: problema_recebido,
-                        identifier: ip_or_host
-                    };
+                    dataReturn[Sistema] = commandData;
+            
                 }
 
-                commands.push(titulo_desc);
-                console.log("passo 1.4 commands after push: ", commands);
-
-            });
-
-            //commands[nome_sistema]["args"] = args;
-
+            }
+            
         });
 
-        console.log("passo 1.5 retornando commands: ", commands);
-
-        return {commands: commands};
     }
+
+    console.log('dataReturn: ', dataReturn);
+
+    return dataReturn;
+
+    //process.exit(0)
 
 }
 
@@ -395,7 +383,7 @@ app.post('/checklist', async (req, res) => {
             text: fileServerPathUrl
         });
     }
-    catch{
+    catch (error){
         console.error('Ocorreu um erro:', error);
         res.status(500).send('Erro interno do servidor');
     }
@@ -421,10 +409,9 @@ app.post('/newcommand', (req, res) =>{
 
 app.use(express.static(path.join(__dirname)));
 
-// Chame MakeReportObjects para obter os grupos de Unidades e VMWares
-let xx = MakeReportObjects();
+//console.log("MakedReportObjects\n", xx, "\n");
 
-console.log("MakedReportObjects", xx);
+//to_html_commands = CommandReader('/checklist report brk unidade{172.128.5.4,112.122.10.2}[nossh] vmware{10.156.4.1,132.98.10.2}[noui,nologin,retorno:\'Reportado ao Jere no grupo tal\']');
 
 app.listen(PORT, () => {
     console.log(`AZ-Reporter iniciado na porta: ${PORT}`);

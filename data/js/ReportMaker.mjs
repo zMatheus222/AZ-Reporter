@@ -6,29 +6,31 @@ import reports from "./../json/reportsbase.json" assert { type: "json" };
 
 //console.log(reports);
 
-class UnidadeControle {
+class unidade {
 
     static Args;
     static List;
 
-    constructor(hostname, ip, unidade){
+    constructor(hostname, ip, unidade, uni){
         this.hostname = hostname;
         this.ip = ip;
         this.unidade = unidade;
+        this.uni = uni;
     }
 }
 
-class VMWare {
+class vmware {
 
     static Args;
     static List;
 
-    constructor(hostname, Servidor, Port, ContainerName, Unidade, IP){
+    constructor(hostname, Servidor, Port, ContainerName, Unidade, uni, IP){
         this.hostname = hostname;
         this.Servidor = Servidor;
         this.Port = Port;
         this.containername = ContainerName;
         this.unidade = Unidade;
+        this.uni = uni;
         this.ip = IP;
     }
 }
@@ -54,21 +56,21 @@ function MakeReportObjects(){
                     Object.keys(reports[empresa][itemEmpresa]).forEach((subItem) =>{ console.log("    subItem.....: ", subItem); //equivale a Args: { e List: {
 
                         
-                        //inserindo argumentos de VMWare ou Unidades nas classes correspondentes
-                        if(itemEmpresa === "UnidadesControle"){
+                        //inserindo argumentos de vmware ou Unidades nas classes correspondentes
+                        if(itemEmpresa === "unidade"){
                             if(subItem === "Args"){
-                                UnidadeControle.Args = reports[empresa][itemEmpresa][subItem];
+                                unidade.Args = reports[empresa][itemEmpresa][subItem];
                             }
                             else if(subItem === "List"){
-                                UnidadeControle.List = reports[empresa][itemEmpresa][subItem];
+                                unidade.List = reports[empresa][itemEmpresa][subItem];
                             }
                         }
-                        else if (itemEmpresa === "VMWares"){
+                        else if (itemEmpresa === "vmware"){
                             if(subItem === "Args"){
-                                VMWare.Args = reports[empresa][itemEmpresa][subItem];
+                                vmware.Args = reports[empresa][itemEmpresa][subItem];
                             }
                             else if(subItem === "List"){
-                                VMWare.List = reports[empresa][itemEmpresa][subItem];
+                                vmware.List = reports[empresa][itemEmpresa][subItem];
                             }
                         }
                         else {
@@ -81,25 +83,27 @@ function MakeReportObjects(){
 
                             console.log('details: ', details);
     
-                            if(itemEmpresa === "UnidadesControle" && subItem === "List"){
+                            if(itemEmpresa === "unidade" && subItem === "List"){
                                 
-                                const NewObjUnidade = new UnidadeControle(
+                                const NewObjUnidade = new unidade(
                                     details.Hostname,
                                     details.IP,
                                     details.UNIDADE,
+                                    details.UNI
                                 );
     
                                 UnidadesGroup.push(NewObjUnidade);
                             }
-                            if (itemEmpresa === "VMWares" && subItem === "List"){
+                            if (itemEmpresa === "vmware" && subItem === "List"){
     
-                                const NewObjVMWare = new VMWare(
+                                const NewObjVMWare = new vmware(
                                     details.Hostname,
                                     details.Servidor,
                                     details.Port,
                                     details.ContainerName,
-                                    details.Unidade,
-                                    details.IP,
+                                    details.UNIDADE,
+                                    details.UNI,
+                                    details.IP
                                 );
     
                                 VMWaresGroup.push(NewObjVMWare);
@@ -111,21 +115,21 @@ function MakeReportObjects(){
     
                 });
 
-                CompanyGroup["UnidadesControle"] = UnidadesGroup;
-                CompanyGroup["VMWares"] = VMWaresGroup;
+                CompanyGroup["unidade"] = UnidadesGroup;
+                CompanyGroup["vmware"] = VMWaresGroup;
     
                 AllGroups[empresa] = CompanyGroup;
                 
             });
 
-            // console.log("\n");
-            // console.log("VMW-ARGS:", VMWare.Args);
-            // console.log("UND-ARGS:", UnidadeControle.Args);
-            // console.log("\n");
-            // console.log("VMW-LIST:", VMWare.List);
-            // console.log("UND-LIST:", UnidadeControle.List);
-            // console.log("\n");
-            // console.log("AllGroups: ", AllGroups);
+            //console.log("\n");
+            //console.log("VMW-ARGS:", vmware.Args);
+            //console.log("UND-ARGS:", unidade.Args);
+            //console.log("\n");
+            //console.log("VMW-LIST:", vmware.List);
+            //console.log("UND-LIST:", unidade.List);
+            //console.log("\n");
+            //console.log("AllGroups: ", AllGroups);
 
             resolve(AllGroups);
 
@@ -143,4 +147,4 @@ function MakeReportObjects(){
 //module.exports = MakeReportObjects;
 //export default MakeReportObjects;
 
-export { MakeReportObjects as default, UnidadeControle, VMWare };
+export { MakeReportObjects as default, unidade, vmware };
