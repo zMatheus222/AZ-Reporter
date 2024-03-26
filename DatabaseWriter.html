@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AZ-Reporter Writer</title>
     <style>
+        body{
+            background-color: dimgrey;
+        }
         h1{
+            color: aliceblue;
             font-family: Verdana;
             font-size: 18px;
         }
         .form{
+            color: aliceblue;
             display: block;
             text-align: center;
         }
@@ -134,14 +139,31 @@
 
                 let iarea_add_item = document.getElementById('iarea_add_item');
 
-                //<br>
                 const br = document.createElement('br');
                 function Br(AppendedItem){ AppendedItem.appendChild(br.cloneNode()); }
 
                 function sendFormData(data){
-                    const jsonContent = JSON.stringify(data, null, 2);
-                    console.log("jsonContent: ", jsonContent);
+                    fetch('http://localhost:8083/requestjson', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data) 
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao enviar requisição: ' + response.status);
+                        }
+                        return response.json(); 
+                    })
+                    .then(responseData => {
+                        console.log('Resposta do servidor:', responseData); 
+                    })
+                    .catch(error => {
+                        console.error('Erro ao enviar requisição:', error); 
+                    });
                 }
+
                     
                 function UpdateAddPanel(){
 
@@ -209,10 +231,10 @@
                             dataToSend["Args"] = {
                                 "select_empresa": select_empresa.value,
                                 "select_sistema": select_sistema.value,
-                                "select_subsys:": select_subsys.value,
-                                "input_iarea_arg.value: ": input_iarea_arg.value,
-                                "input_iarea_title.value: ": input_iarea_title.value,
-                                "input_iarea_description.value: ": input_iarea_description.value
+                                "select_subsys": select_subsys.value,
+                                "input_iarea_arg": input_iarea_arg.value,
+                                "input_iarea_title": input_iarea_title.value,
+                                "input_iarea_description": input_iarea_description.value
                             };
                             
                             console.log("select_empresa: ", select_empresa.value);
@@ -261,11 +283,7 @@
                             sendFormData(dataToSend);
                         
                         });
-
-                        
-                        
                     }
-                    
                 }
 
                 function appendSelect(SelectValue, AppendedItem){
@@ -311,6 +329,9 @@
                 UpdateOptions();
                 UpdateAddPanel();
 
+                //console.log('Iarea é : ',document.querySelectorAll('#iarea_add_item')[0].children)
+                //const filteredChildren = Array.from(document.querySelectorAll('#iarea_add_item')[0].children)
+                //console.log('Filtered é: ',filteredChildren)
         });
 
         });

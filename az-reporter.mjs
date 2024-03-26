@@ -4,8 +4,8 @@ import express from 'express';
 //const cors = require('cors');
 import cors from 'cors';
 
-//const fs = require('fs');
-import fs from 'fs';
+import fs, { writeFile } from 'fs';
+
 
 //const bodyParser = require('body-parser');
 import bodyParser from 'body-parser';
@@ -37,6 +37,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(express.static('reports/brk')); //rota que serve os arquivos estaticos no caso a imagem do report
+app.use(express.json());
 
 const PORT = 8083;
 
@@ -265,6 +266,80 @@ function CommandReader(command){
 app.get('/commands', (req, res) => {
     res.send(to_html_commands);
 });
+
+app.post('/requestjson', (req, res) => {
+    console.log('Dados recebidos do cliente:', req.body);
+    const caminhoArquivo = 'data/json/reportsbase.json';
+
+    // lendo o arquivo JSON existente
+    fs.readFile(caminhoArquivo, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Erro ao ler o arquivo:', err);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
+        //console.log('Conteúdo do arquivo:', data);
+        
+        let existingJson = {};
+        try {
+            existingJson = JSON.parse(data);
+        } catch (parseErr) {
+            console.error('Erro ao analisar o arquivo JSON:', parseErr);
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
+
+        //console.log('existingJson:', existingJson);
+
+        const empresa = req.body.Args.select_empresa;
+        const sistema = req.body.Args.select_sistema;
+        const subsistema = req.body.Args['select_subsys'];
+        console.log('empresa é: ', empresa, 'sistema é: ', sistema,'substistema é: ', subsistema,);
+
+        if (existingJson.hasOwnProperty(empresa) && existingJson[empresa].hasOwnProperty(sistema)) {
+            const subsystemData = existingJson[empresa][sistema];
+
+            // verificação se o subsistema é Args ou List
+            if (subsystemData.hasOwnProperty(subsistema)) {
+                const argsData = req.body.Args;
+                for (const argKey in argsData) {
+                    if (argKey.startsWith('input_')) {
+                        const argName = argsData['input_iarea_arg'];
+                        const titleKey = argsData['input_iarea_title'];
+                        const descriptionKey = argsData['input_iarea_description'];
+                        console.log('argname é: ', argName, 'titleKey é: ', titleKey,'descriptionKey é: ', descriptionKey,);
+
+                        if (argsData.hasOwnProperty('input_iarea_title') && argsData.hasOwnProperty('input_iarea_description')) {
+                            const newData = {
+                                [argName]: {
+                                    "titulo": titleKey,
+                                    "descricao": descriptionKey
+                                }
+                            };
+                            console.log('newdata é: ',newData)
+                            Object.assign(subsystemData[subsistema], newData);
+                        } else {
+                            console.error(`Campos título e descrição não encontrados para ${argKey}`);
+                        }
+                    }
+                }
+                fs.writeFile(caminhoArquivo, JSON.stringify(existingJson, null, 2), 'utf8', writeErr => {
+                    if (writeErr) {
+                        console.error('Erro ao escrever no arquivo JSON:', writeErr);
+                        return res.status(500).json({ error: 'Erro interno do servidor' });
+                    }
+                    console.log('Dados adicionados ao arquivo JSON com sucesso.');
+                    res.status(200).json({ message: 'Dados adicionados com sucesso' });
+                });
+            } else {
+                console.error('Subsistema inválido:', subsistema);
+                res.status(400).json({ error: 'Subsistema inválido' });
+            }
+        } else {
+            console.error('Empresa ou sistema inválido:', empresa, sistema);
+            res.status(400).json({ error: 'Empresa ou sistema inválido' });
+        }
+    });
+});
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 

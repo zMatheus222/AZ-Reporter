@@ -72,7 +72,7 @@ function MakeReportObjects(){
                             }
                         }
                         else {
-                            Console.log("Erro ao inserir Args | List na classe.");
+                            console.log("Erro ao inserir Args | List na classe.");
                         }
     
                         Object.keys(reports[empresa][itemEmpresa][subItem]).forEach((item) =>{ console.log("      item........: ", item); //equivale aos itens dentro de Args: { e List: {
