@@ -417,33 +417,50 @@
                 const system_add_button = document.getElementById('system_add_button');
                 system_add_button.addEventListener('click', add_system_input);
 
-                function sendDataToJson(){
-                    
+                function sendDataToJson() {
                     const allElements = document.querySelectorAll('[id^="systemLabel"]');
-                    let sendValues = [];
+                    const systemName = allElements[0].value.trim(); 
 
-                    console.log('allElements: ', allElements);
+                    if (systemName === '') {
+                        alert('Por favor, insira um nome para o sistema.');
+                        console.warn('Nome do sistema não pode estar vazio.');
+                        return; 
+                    }
+                    const attributes = [];
 
-                    allElements.forEach((item_atual) =>{
-                        console.log('item_atual: ', item_atual);
-                        sendValues.push(item_atual.value);
-                    });
+                    for (let i = 1; i < allElements.length; i++) {
+                        const attributeValue = allElements[i].value.trim(); 
+
+                        if (attributeValue !== '') {
+                            attributes.push(attributeValue);
+                        }
+                    }
+
+                    if (attributes.length === 0) {
+                        alert('Por favor, insira pelo menos um atributo para o sistema.');
+                        console.warn('Pelo menos um atributo deve ser inserido para o sistema.');
+                        return; 
+                    }
+
+                    const sendValues = {
+                        systemName: systemName,
+                        attributes: attributes
+                    };
 
                     fetch('http://localhost:8083/addnewsystem', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json', // Indica que os dados estão no formato JSON
+                            'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(sendValues) // Converte os dados para o formato JSON
+                        body: JSON.stringify(sendValues) 
                     }).then(response => {
-                        if (!response.ok) throw new Error('Erro ao enviar os dados'); // Lança um erro se a resposta não estiver OK
-                        return response.json(); // Converte a resposta para JSON
+                        if (!response.ok) throw new Error('Erro ao enviar os dados');
+                        return response.json();
                     }).then(data => {
-                        console.log('Dados recebidos:', data); // Exibe os dados recebidos do servidor
+                        console.log('Dados recebidos:', data); 
                     }).catch(error => {
-                        console.error('Erro:', error); // Exibe qualquer erro que ocorra durante o processo
+                        console.error('Erro:', error); 
                     });
-
                 }
 
                 //

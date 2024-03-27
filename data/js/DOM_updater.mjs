@@ -11,7 +11,7 @@ import MakeReportObjects from './../js/ReportMaker.mjs';
 
 // Chame MakeReportObjects para obter os grupos de Unidades e VMWares
 var AllGroups = await MakeReportObjects();
-console.log('\n\nteste 1:\n', AllGroups["brk"]["unidade"], "\n\n");
+//console.log('\n\nteste 1:\n', AllGroups["brk"]["unidade"], "\n\n");
 
 async function UpdateDOM() {
 

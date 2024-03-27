@@ -1,17 +1,5 @@
 {
   "brk": {
-    "1111": {
-      "Args": {},
-      "List": [
-        {}
-      ]
-    },
-    "11111": {
-      "Args": {},
-      "List": [
-        {}
-      ]
-    },
     "unidade": {
       "Args": {
         "nossh": {
@@ -68,36 +56,6 @@
           "UNI": "RVD",
           "IP": "10.156.86.20"
         }
-      ]
-    },
-    "systemn": {
-      "Args": {},
-      "List": [
-        {}
-      ]
-    },
-    "gggg": {
-      "Args": {},
-      "List": [
-        {
-          "xxxxx": "",
-          "cccc": ""
-        }
-      ]
-    },
-    "igao": {
-      "Args": {
-        "kart": {
-          "titulo": "Igão duplicador de kart safado",
-          "descricao": "Igão encontrado duplicando Kart's no Gather"
-        }
-      },
-      "List": [
-        {
-          "lolzeiro": "",
-          "valoranteiro": ""
-        },
-        {}
       ]
     }
   },

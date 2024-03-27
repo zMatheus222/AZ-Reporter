@@ -252,50 +252,42 @@ function CommandReader(command){
 
 }
 
-function createSystem(systemName, atributes){
-
+function createSystem(systemName, attributes) {
     const existingData = fs.readFileSync(json_db_dir);
     let jsonDatabase = JSON.parse(existingData);
 
-    //console.log('\njsonDatabase pre: ', JSON.stringify(jsonDatabase, null, 2));
+    if (!jsonDatabase["brk"].hasOwnProperty(systemName)) {
+        jsonDatabase["brk"][systemName] = {
+            "Args": {},
+            "List": [{}]
+        };
+    }
 
-    jsonDatabase["brk"][systemName] = {
-        "Args": {},
-        "List": []
-    };
+    const existingList = jsonDatabase["brk"][systemName]["List"][0];
 
-    let newItem = {};
-
-    console.log('atributes: ', atributes);
-
-    atributes.forEach((key) => {
-        newItem[key] = '';
+    attributes.forEach((key) => {
+        existingList[key] = '';
     });
 
-    jsonDatabase["brk"][systemName]["List"].push(newItem);
-
-    //console.log('mid jsonDatabase:', JSON.stringify(jsonDatabase, null, 2));
-
-    try{
+    try {
         console.log('Escrevendo novo sistema ' + systemName + " no arquivo .json");
         fs.writeFileSync(json_db_dir, JSON.stringify(jsonDatabase, null, 2));
         console.log('Escrito novo sistema ', systemName, 'to the JSON file');
-    }
-    catch (error){
+    } catch (error) {
         console.error('Erro ao escrever o arquivo JSON:', error);
     }
-
 }
 
 app.get('/commands', (req, res) => {
     res.send(to_html_commands);
 });
 
+let Reports = {};
+
 app.post('/requestjson', (req, res) => {
     console.log('Dados recebidos do cliente:', req.body);
     const caminhoArquivo = 'data/json/reportsbase.json';
 
-    // lendo o arquivo JSON existente
     fs.readFile(caminhoArquivo, 'utf8', (err, data) => {
         
         if (err) {
@@ -311,16 +303,17 @@ app.post('/requestjson', (req, res) => {
             return res.status(500).json({ error: 'Erro interno do servidor' });
         }
 
+        Reports = existingJson; 
+
         const empresa = req.body.Args.select_empresa;
         const sistema = req.body.Args.select_sistema;
         const subsistema = req.body.Args['select_subsys'];
 
-        console.log('empresa é: ', empresa,',', 'sistema é: ',',', sistema,'substistema é: ',',', subsistema);
+        console.log('empresa é: ',empresa,',', 'sistema é: ',',',sistema,'substistema é: ',',',subsistema);
 
         if (existingJson.hasOwnProperty(empresa) && existingJson[empresa].hasOwnProperty(sistema)) {
             const subsystemData = existingJson[empresa][sistema];
 
-            // Verifica se o subsistema é Args ou List
             if (subsystemData.hasOwnProperty(subsistema)) {
                 if (subsistema === 'Args') {
                     const argsData = req.body.Args;
@@ -348,31 +341,27 @@ app.post('/requestjson', (req, res) => {
                     }
                 } else if (subsistema === 'List') {
                     const listData = req.body.Args.List;
+                    console.log('args.list é: ', listData);
                 
                     if (listData && typeof listData === 'object') {
-                        const formattedListData = {};
+                        const listExists = subsystemData[subsistema] && subsystemData[subsistema].length > 0;
                 
-                        let keyPattern = [];
-                        if (sistema === 'unidade') {
-                            keyPattern = ['Hostname', 'IP', 'UNIDADE', 'UNI'];
-                        } else if (sistema === 'vmware') {
-                            keyPattern = ['Hostname', 'Servidor', 'Port', 'ContainerName', 'UNIDADE', 'UNI', 'IP'];
+                        if (!listExists) {
+                            subsystemData[subsistema] = []; 
+                        } else {
+                            subsystemData[subsistema].splice(0, subsystemData[subsistema].length);
                         }
-                
-                        keyPattern.forEach((key, index) => {
-                            if (listData[`label_${key}`]) {
-                                if (key === 'Servidor' || key === 'Port') {
-                                    formattedListData[key] = parseInt(listData[`label_${key}`]);
-                                } else {
-                                    formattedListData[key] = listData[`label_${key}`];
-                                }
+
+                        let formattedListData = {};
+
+                        for (const key in listData) {
+                            if (key.startsWith('label_')) {
+                                const labelValue = listData[key];
+                                const attributeName = key.substring('label_'.length); 
+                                formattedListData[attributeName] = labelValue;
                             }
-                        });
-                
-                        if (!subsystemData[subsistema]) {
-                            subsystemData[subsistema] = [];
                         }
-            
+
                         subsystemData[subsistema].push(formattedListData);
                     } else {
                         console.error('Dados de lista inválidos:', listData);
@@ -485,18 +474,12 @@ app.post('/addnewsystem', (req, res)=>{
 
     //função que vai receber os dados para adição de novo sistema
 
-    let SystemName;
-    let atributes = [];
+    const systemName = req.body.systemName;
+    const attributes = req.body.attributes;
 
-    req.body.forEach((atual, index)=>{
-        console.log('index: ', index, '| atual: ', atual);
-        (index === 0) ? SystemName = atual : atributes.push(atual);
-    });
+    console.log('SystemName: ', systemName, 'attributes:', attributes);
 
-    console.log('SystemName: ', SystemName, 'atributes:', atributes);
-
-    createSystem(SystemName, atributes);
-
+    createSystem(systemName, attributes);
 });
 
 app.use(express.static(path.join(__dirname)));

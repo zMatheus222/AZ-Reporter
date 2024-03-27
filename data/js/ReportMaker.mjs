@@ -51,9 +51,9 @@ function MakeReportObjects(){
                 let VMWaresGroup = []; //vetor que irá guardar VMWares
                 let UnidadesGroup = []; //vetor que irá guardar Unidades
     
-                Object.keys(reports[empresa]).forEach((itemEmpresa) =>{ console.log("  itensEmpresa: ", itemEmpresa); //equivale a UnidadesControle: {
+                Object.keys(reports[empresa]).forEach((itemEmpresa) =>{ //console.log("  itensEmpresa: ", itemEmpresa); //equivale a UnidadesControle: {
     
-                    Object.keys(reports[empresa][itemEmpresa]).forEach((subItem) =>{ console.log("    subItem.....: ", subItem); //equivale a Args: { e List: {
+                    Object.keys(reports[empresa][itemEmpresa]).forEach((subItem) =>{ //console.log("    subItem.....: ", subItem); //equivale a Args: { e List: {
 
                         
                         //inserindo argumentos de vmware ou Unidades nas classes correspondentes
@@ -77,11 +77,11 @@ function MakeReportObjects(){
                             console.log("Erro ao inserir Args | List na classe.");
                         }
     
-                        Object.keys(reports[empresa][itemEmpresa][subItem]).forEach((item) =>{ console.log("      item........: ", item); //equivale aos itens dentro de Args: { e List: {
+                        Object.keys(reports[empresa][itemEmpresa][subItem]).forEach((item) =>{ //console.log("      item........: ", item); //equivale aos itens dentro de Args: { e List: {
                             
                             const details = reports[empresa][itemEmpresa][subItem][item];
 
-                            console.log('details: ', details);
+                            //console.log('details: ', details);
     
                             if(itemEmpresa === "unidade" && subItem === "List"){
                                 
@@ -129,7 +129,7 @@ function MakeReportObjects(){
             //console.log("VMW-LIST:", vmware.List);
             //console.log("UND-LIST:", unidade.List);
             //console.log("\n");
-            console.log("AllGroups: ", AllGroups);
+            //console.log("AllGroups: ", AllGroups);
 
             resolve(AllGroups);
 
