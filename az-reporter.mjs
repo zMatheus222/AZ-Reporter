@@ -257,7 +257,7 @@ function createSystem(systemName, atributes){
     const existingData = fs.readFileSync(json_db_dir);
     let jsonDatabase = JSON.parse(existingData);
 
-    console.log('\njsonDatabase pre: ', JSON.stringify(jsonDatabase, null, 2));
+    //console.log('\njsonDatabase pre: ', JSON.stringify(jsonDatabase, null, 2));
 
     jsonDatabase["brk"][systemName] = {
         "Args": {},
@@ -266,13 +266,15 @@ function createSystem(systemName, atributes){
 
     let newItem = {};
 
+    console.log('atributes: ', atributes);
+
     atributes.forEach((key) => {
         newItem[key] = '';
     });
 
     jsonDatabase["brk"][systemName]["List"].push(newItem);
 
-    console.log('mid jsonDatabase:', JSON.stringify(jsonDatabase, null, 2));
+    //console.log('mid jsonDatabase:', JSON.stringify(jsonDatabase, null, 2));
 
     try{
         console.log('Escrevendo novo sistema ' + systemName + " no arquivo .json");
@@ -295,6 +297,7 @@ app.post('/requestjson', (req, res) => {
 
     // lendo o arquivo JSON existente
     fs.readFile(caminhoArquivo, 'utf8', (err, data) => {
+        
         if (err) {
             console.error('Erro ao ler o arquivo:', err);
             return res.status(500).json({ error: 'Erro interno do servidor' });
@@ -478,12 +481,15 @@ app.post('/newcommand', (req, res) =>{
 
 app.post('/addnewsystem', (req, res)=>{
 
+    console.log('req.body: ', req.body);
+
     //função que vai receber os dados para adição de novo sistema
 
     let SystemName;
     let atributes = [];
 
     req.body.forEach((atual, index)=>{
+        console.log('index: ', index, '| atual: ', atual);
         (index === 0) ? SystemName = atual : atributes.push(atual);
     });
 

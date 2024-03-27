@@ -419,14 +419,17 @@
 
                 function sendDataToJson(){
                     
-                    const allElements = document.querySelectorAll('#systemLabel');
+                    const allElements = document.querySelectorAll('[id^="systemLabel"]');
                     let sendValues = [];
 
+                    console.log('allElements: ', allElements);
+
                     allElements.forEach((item_atual) =>{
+                        console.log('item_atual: ', item_atual);
                         sendValues.push(item_atual.value);
                     });
 
-                    fetch('http://192.168.0.4:8083/addnewsystem', {
+                    fetch('http://localhost:8083/addnewsystem', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json', // Indica que os dados estão no formato JSON
@@ -462,6 +465,7 @@
                 
                 UpdateOptions();
                 UpdateAddPanel();
+                ModeChange();
 
                 //console.log('Iarea é : ',document.querySelectorAll('#iarea_add_item')[0].children)
                 //const filteredChildren = Array.from(document.querySelectorAll('#iarea_add_item')[0].children)
