@@ -309,11 +309,10 @@ app.post('/requestjson', (req, res) => {
         const sistema = req.body.Args.select_sistema;
         const subsistema = req.body.Args['select_subsys'];
 
-        console.log('empresa é: ',empresa,',', 'sistema é: ',',',sistema,'substistema é: ',',',subsistema);
+        console.log('empresa é:',empresa,'|', 'sistema é:',sistema,'|','substistema é:',subsistema);
 
         if (existingJson.hasOwnProperty(empresa) && existingJson[empresa].hasOwnProperty(sistema)) {
             const subsystemData = existingJson[empresa][sistema];
-
             if (subsystemData.hasOwnProperty(subsistema)) {
                 if (subsistema === 'Args') {
                     const argsData = req.body.Args;
@@ -345,15 +344,41 @@ app.post('/requestjson', (req, res) => {
                 
                     if (listData && typeof listData === 'object') {
                         const listExists = subsystemData[subsistema] && subsystemData[subsistema].length > 0;
-                
+
                         if (!listExists) {
-                            subsystemData[subsistema] = []; 
-                        } else {
-                            subsystemData[subsistema].splice(0, subsystemData[subsistema].length);
+                            subsystemData[subsistema] = [];
                         }
-
+                
+                        let maquina_existente = false;
+                
+                        for (const maquina of subsystemData[subsistema]) {
+                            let campos_ja_existentes = true;
+                
+                            for (const key in listData) {
+                                if (key.startsWith('label_')) {
+                                    const labelValue = listData[key];
+                                    const attributeName = key.substring('label_'.length); 
+                                    
+                                    if (maquina[attributeName] !== labelValue) {
+                                        campos_ja_existentes = false;
+                                        break;
+                                    }
+                                }
+                            }
+            
+                            if (campos_ja_existentes) {
+                                maquina_existente = true;
+                                break;
+                            }
+                        }
+            
+                        if (maquina_existente) {
+                            console.log('Essa máquina já existe.');
+                            return res.status(400).json({ error:'Essa máquina já existe'});
+                        }
+                
                         let formattedListData = {};
-
+                
                         for (const key in listData) {
                             if (key.startsWith('label_')) {
                                 const labelValue = listData[key];
@@ -361,7 +386,21 @@ app.post('/requestjson', (req, res) => {
                                 formattedListData[attributeName] = labelValue;
                             }
                         }
-
+                        for (let i = 0; i < subsystemData[subsistema].length; i++) {
+                            const obj = subsystemData[subsistema][i];
+                            let esta_vazio = true;
+                            for (const prop in obj) {
+                                if (obj[prop] !== '') {
+                                    isEmpty = false;
+                                    break;
+                                }
+                            }
+                            if (esta_vazio) {
+                                subsystemData[subsistema].splice(i, 1);
+                                i--;
+                            }
+                        }
+                
                         subsystemData[subsistema].push(formattedListData);
                     } else {
                         console.error('Dados de lista inválidos:', listData);
@@ -369,7 +408,6 @@ app.post('/requestjson', (req, res) => {
                         return;
                     }
                 }
-
                 fs.writeFile(caminhoArquivo, JSON.stringify(existingJson, null, 2), 'utf8', writeErr => {
                     if (writeErr) {
                         console.error('Erro ao escrever no arquivo JSON:', writeErr);
